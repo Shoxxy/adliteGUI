@@ -1,43 +1,43 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Adjust Event Controller</title>
+    <title>Adjust Controller Gold</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; display: flex; justify-content: center; padding: 40px; }
-        .card { background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); width: 450px; border: 1px solid #333; }
-        h2 { color: #bb86fc; text-align: center; margin-top: 0; }
-        label { display: block; margin: 15px 0 5px; color: #aaa; font-size: 0.85rem; }
-        select, input { width: 100%; padding: 12px; background: #2c2c2c; border: 1px solid #444; border-radius: 6px; color: white; font-size: 1rem; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #bb86fc; color: #000; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #9965f4; }
-        #log { margin-top: 20px; padding: 15px; background: #000; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 0.85rem; min-height: 40px; border-left: 4px solid #bb86fc; white-space: pre-wrap; }
-        .loading { color: #888; }
+        body { background: #1a1a1a; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 40px; }
+        .card { background: #252525; padding: 30px; border-radius: 12px; border: 1px solid #333; width: 480px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; }
+        .card::before { content: ""; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, #ff8c00, #d4af37); border-radius: 12px 12px 0 0; }
+        h2 { color: #d4af37; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
+        label { display: block; margin: 15px 0 5px; color: #ff8c00; font-size: 0.8rem; font-weight: bold; }
+        select, input { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 1rem; box-sizing: border-box; outline: none; }
+        select:focus, input:focus { border-color: #d4af37; }
+        button { width: 100%; padding: 15px; background: linear-gradient(45deg, #d4af37, #ff8c00); color: #000; border: none; border-radius: 6px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,140,0,0.3); }
+        #log { margin-top: 25px; padding: 15px; background: #111; border-radius: 6px; font-family: monospace; font-size: 0.9rem; border-left: 3px solid #d4af37; min-height: 20px; color: #d4af37; }
+        .logout { text-align: center; display: block; margin-top: 20px; color: #666; text-decoration: none; font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <div class="card">
         <h2>Adjust Controller</h2>
         <form id="ctrlForm">
-            <label>Plattform</label>
+            <label>PLATTFORM</label>
             <select name="platform">
-                <option value="android">Android (gps_adid)</option>
-                <option value="ios">iOS (idfa)</option>
+                <option value="android">ANDROID (GPS_ADID)</option>
+                <option value="ios">IOS (IDFA)</option>
             </select>
-
-            <label>Geräte ID</label>
+            <label>GERÄTE ID</label>
             <input type="text" name="device_id" placeholder="ID eingeben..." required>
-
-            <label>Event Auswählen</label>
+            <label>EVENT AUSWÄHLEN</label>
             <select name="event_name">
                 {% for event in events %}
                 <option value="{{ event }}">{{ event }}</option>
                 {% endfor %}
             </select>
-
-            <button type="submit" id="btn">Event Senden</button>
+            <button type="submit" id="btn">BEFEHL SENDEN</button>
         </form>
-        <div id="log">Bereit...</div>
+        <div id="log">System bereit...</div>
+        <a href="/logout" class="logout">Abmelden</a>
     </div>
 
     <script>
@@ -48,18 +48,14 @@
         form.onsubmit = async (e) => {
             e.preventDefault();
             btn.disabled = true;
-            log.innerHTML = '<span class="loading">Sende an Zone C...</span>';
+            log.innerText = "Übertrage an Zone C...";
 
-            const formData = new FormData(form);
             try {
-                const response = await fetch('/api/send', { method: 'POST', body: formData });
+                const response = await fetch('/api/send', { method: 'POST', body: new FormData(form) });
                 const result = await response.json();
-                
                 log.innerText = result.message;
-                log.style.borderLeftColor = result.success ? '#03dac6' : '#cf6679';
             } catch (err) {
-                log.innerText = "Fehler: Verbindung unterbrochen.";
-                log.style.borderLeftColor = '#cf6679';
+                log.innerText = "Fehler bei der Übertragung.";
             } finally {
                 btn.disabled = false;
             }
