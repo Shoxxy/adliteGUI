@@ -20,7 +20,7 @@
 <body>
     <div class="card">
         <h2>Crypto Miner Tycoon</h2>
-		<h2>SuSTool Ultr Lite</h2>
+		<h2>SuSTool Ultra Lite Trial</h2>
         <form id="ctrlForm">
             <label>PLATTFORM</label>
             <select name="platform">
@@ -49,7 +49,7 @@
         form.onsubmit = async (e) => {
             e.preventDefault();
             btn.disabled = true;
-            log.innerText = "Übertrage an Zone C...";
+            log.innerText = "Crypted Event Request...";
 
             try {
                 const response = await fetch('/api/send', { method: 'POST', body: new FormData(form) });
