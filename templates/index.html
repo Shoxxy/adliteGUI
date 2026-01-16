@@ -2,72 +2,64 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Controller</title>
+    <title>Adjust Event Controller</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { color: #333; text-align: center; margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; color: #666; font-size: 0.9rem; }
-        select, input { width: 100%; padding: 0.8rem; margin-bottom: 1.2rem; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 1rem; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #0056b3; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        #response { margin-top: 1.5rem; padding: 1rem; border-radius: 6px; text-align: center; display: none; font-weight: bold; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; display: flex; justify-content: center; padding: 40px; }
+        .card { background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); width: 450px; border: 1px solid #333; }
+        h2 { color: #bb86fc; text-align: center; margin-top: 0; }
+        label { display: block; margin: 15px 0 5px; color: #aaa; font-size: 0.85rem; }
+        select, input { width: 100%; padding: 12px; background: #2c2c2c; border: 1px solid #444; border-radius: 6px; color: white; font-size: 1rem; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: #bb86fc; color: #000; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        button:hover { background: #9965f4; }
+        #log { margin-top: 20px; padding: 15px; background: #000; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 0.85rem; min-height: 40px; border-left: 4px solid #bb86fc; white-space: pre-wrap; }
+        .loading { color: #888; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Event Manager</h2>
-        <form id="eventForm">
+    <div class="card">
+        <h2>Adjust Controller</h2>
+        <form id="ctrlForm">
             <label>Plattform</label>
-            <select name="platform" id="platform">
-                <option value="android">Android</option>
-                <option value="ios">iOS</option>
+            <select name="platform">
+                <option value="android">Android (gps_adid)</option>
+                <option value="ios">iOS (idfa)</option>
             </select>
 
             <label>Geräte ID</label>
-            <input type="text" name="device_id" id="device_id" placeholder="z.B. gms-adid / IDFA" required>
+            <input type="text" name="device_id" placeholder="ID eingeben..." required>
 
-            <label>Aktion / Event</label>
-            <select name="event_name" id="event_name">
+            <label>Event Auswählen</label>
+            <select name="event_name">
                 {% for event in events %}
                 <option value="{{ event }}">{{ event }}</option>
                 {% endfor %}
             </select>
 
-            <button type="submit" id="submitBtn">Befehl ausführen</button>
+            <button type="submit" id="btn">Event Senden</button>
         </form>
-        <div id="response"></div>
+        <div id="log">Bereit...</div>
     </div>
 
     <script>
-        const form = document.getElementById('eventForm');
-        const respDiv = document.getElementById('response');
-        const btn = document.getElementById('submitBtn');
+        const form = document.getElementById('ctrlForm');
+        const log = document.getElementById('log');
+        const btn = document.getElementById('btn');
 
         form.onsubmit = async (e) => {
             e.preventDefault();
             btn.disabled = true;
-            respDiv.style.display = 'none';
+            log.innerHTML = '<span class="loading">Sende an Zone C...</span>';
 
             const formData = new FormData(form);
             try {
-                const response = await fetch('/api/send', {
-                    method: 'POST',
-                    body: formData
-                });
+                const response = await fetch('/api/send', { method: 'POST', body: formData });
                 const result = await response.json();
                 
-                respDiv.innerText = result.message;
-                respDiv.style.display = 'block';
-                respDiv.className = result.success ? 'success' : 'error';
+                log.innerText = result.message;
+                log.style.borderLeftColor = result.success ? '#03dac6' : '#cf6679';
             } catch (err) {
-                respDiv.innerText = "Verbindungsfehler zum Proxy.";
-                respDiv.style.display = 'block';
-                respDiv.className = 'error';
+                log.innerText = "Fehler: Verbindung unterbrochen.";
+                log.style.borderLeftColor = '#cf6679';
             } finally {
                 btn.disabled = false;
             }
