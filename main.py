@@ -86,7 +86,7 @@ def check_session(request: Request):
 
 def send_security_report():
     while True:
-        time.sleep(3600) # 60 Minuten warten
+        time.sleep(600) # 10 Minuten warten
         if not os.path.exists(LOG_FILE) or os.path.getsize(LOG_FILE) == 0:
             continue
 
