@@ -1,65 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Crypto Miner Tycoon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuStoolz Lite Beta | Adjust Controller</title>
     <style>
-        body { background: #1a1a1a; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 40px; }
-        .card { background: #252525; padding: 30px; border-radius: 12px; border: 1px solid #333; width: 480px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; }
-        .card::before { content: ""; position: absolute; top:0; left:0; right:0; height: 3px; background: linear-gradient(90deg, #ff8c00, #d4af37); border-radius: 12px 12px 0 0; }
-        h2 { color: #d4af37; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
-        label { display: block; margin: 15px 0 5px; color: #ff8c00; font-size: 0.8rem; font-weight: bold; }
-        select, input { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 1rem; box-sizing: border-box; outline: none; }
-        select:focus, input:focus { border-color: #d4af37; }
-        button { width: 100%; padding: 15px; background: linear-gradient(45deg, #d4af37, #ff8c00); color: #000; border: none; border-radius: 6px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 25px; transition: 0.3s; }
-        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,140,0,0.3); }
-        #log { margin-top: 25px; padding: 15px; background: #111; border-radius: 6px; font-family: monospace; font-size: 0.9rem; border-left: 3px solid #d4af37; min-height: 20px; color: #d4af37; }
-        .logout { text-align: center; display: block; margin-top: 20px; color: #666; text-decoration: none; font-size: 0.8rem; }
+        :root {
+            --bg-deep: #0a0a0b;
+            --card-bg: rgba(20, 20, 22, 0.95);
+            --gold: #d4af37;
+            --gold-bright: #f9e5af;
+            --orange: #ff8c00;
+        }
+
+        body { 
+            background: var(--bg-deep);
+            color: #f0f0f0; 
+            font-family: 'Inter', sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; overflow: hidden;
+        }
+
+        canvas { position: absolute; top: 0; left: 0; z-index: 0; }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 40px; border-radius: 24px; 
+            border: 1px solid rgba(212, 175, 55, 0.15); 
+            width: 100%; max-width: 460px; 
+            backdrop-filter: blur(20px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+            z-index: 10; position: relative;
+        }
+
+        /* Logo Bereich */
+        .logo-container { text-align: center; margin-bottom: 30px; }
+        .logo-main {
+            font-size: 3.8rem; font-weight: 900; margin: 0;
+            background: linear-gradient(to bottom, var(--gold-bright), var(--gold), var(--orange));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            transform: skew(-6deg); filter: drop-shadow(0 0 10px rgba(212,175,55,0.2));
+        }
+        .logo-sub {
+            font-size: 1rem; color: #555; text-transform: uppercase;
+            letter-spacing: 10px; display: block; margin-top: -10px;
+        }
+
+        /* Formular */
+        label { display: block; margin-bottom: 8px; color: var(--gold); font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; }
+        .input-group { margin-bottom: 20px; }
+        select, input { 
+            width: 100%; padding: 14px; background: rgba(0,0,0,0.4); 
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; 
+            color: #fff; font-size: 0.9rem; outline: none; transition: 0.3s;
+        }
+        select:focus, input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.1); }
+
+        button { 
+            width: 100%; padding: 16px; 
+            background: linear-gradient(135deg, var(--gold), var(--orange)); 
+            color: #000; border: none; border-radius: 10px; 
+            font-weight: 900; text-transform: uppercase; cursor: pointer;
+            letter-spacing: 2px; transition: 0.3s;
+        }
+        button:hover { transform: translateY(-2px); filter: brightness(1.2); box-shadow: 0 10px 20px rgba(212,175,55,0.2); }
+
+        #log-container {
+            margin-top: 30px; padding: 15px; background: rgba(0,0,0,0.6);
+            border-radius: 10px; border-left: 3px solid var(--gold);
+            font-family: monospace; font-size: 0.8rem; text-align: center;
+        }
+
+        .logout { display: block; text-align: center; margin-top: 25px; color: #444; text-decoration: none; font-size: 0.7rem; letter-spacing: 1px; }
+        .logout:hover { color: var(--gold); }
     </style>
 </head>
 <body>
+    <canvas id="stars"></canvas>
+
     <div class="card">
-        <h2>Crypto Miner Tycoon</h2>
-		<h2>SuSTool Ultra Lite Trial</h2>
+        <div class="logo-container">
+            <h1 class="logo-main">SuStoolz</h1>
+            <span class="logo-sub">Lite Beta</span>
+        </div>
+
         <form id="ctrlForm">
-            <label>PLATTFORM</label>
-            <select name="platform">
-                <option value="android">ANDROID (GPS_ADID)</option>
-                <option value="ios">IOS (IDFA)</option>
-            </select>
-            <label>GERÄTE ID</label>
-            <input type="text" name="device_id" placeholder="ID eingeben..." required>
-            <label>EVENT AUSWÄHLEN</label>
-            <select name="event_name">
-                {% for event in events %}
-                <option value="{{ event }}">{{ event }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" id="btn">EVENT SENDEN</button>
+            <div class="input-group">
+                <label>TARGET APP</label>
+                <select name="app_name" id="app_select" onchange="updateEvents()">
+                    {% for app_name in app_config.keys() %}
+                    <option value="{{ app_name }}">{{ app_name.upper() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>ENGINE / PLATFORM</label>
+                <select name="platform">
+                    <option value="android">ANDROID (GPS_ADID)</option>
+                    <option value="ios">IOS (IDFA)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>DEVICE IDENTITY</label>
+                <input type="text" name="device_id" placeholder="ID eingeben..." required>
+            </div>
+
+            <div class="input-group">
+                <label>COMMAND TRIGGER</label>
+                <select name="event_name" id="event_select"></select>
+            </div>
+
+            <button type="submit" id="btn">Execute Injection</button>
         </form>
-        <div id="log">System bereit...</div>
-        <a href="/logout" class="logout">Abmelden</a>
+
+        <div id="log-container">
+            <span id="log-content" style="color: var(--gold);">SYSTEM ONLINE</span>
+        </div>
+
+        <a href="/logout" class="logout">TERMINATE_SESSION</a>
     </div>
 
     <script>
-        const form = document.getElementById('ctrlForm');
-        const log = document.getElementById('log');
+        // Sternenhimmel Skript
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        function createStars() {
+            stars = [];
+            for(let i=0; i<180; i++) {
+                stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*1.2, speed: Math.random()*0.15 });
+            }
+        }
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            stars.forEach(s => {
+                ctx.globalAlpha = Math.random() * 0.4 + 0.3;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+                s.y -= s.speed; if(s.y < 0) s.y = canvas.height;
+            });
+            requestAnimationFrame(draw);
+        }
+        window.addEventListener('resize', resize); resize(); createStars(); draw();
+
+        // App-Logik
+        const appConfig = {{ app_config | tojson }};
+        const appSelect = document.getElementById('app_select');
+        const eventSelect = document.getElementById('event_select');
+        const logContent = document.getElementById('log-content');
         const btn = document.getElementById('btn');
 
-        form.onsubmit = async (e) => {
+        function updateEvents() {
+            const selectedApp = appSelect.value;
+            const events = appConfig[selectedApp] || [];
+            eventSelect.innerHTML = '';
+            events.forEach(event => {
+                const opt = document.createElement('option');
+                opt.value = event; opt.innerHTML = event.toUpperCase();
+                eventSelect.appendChild(opt);
+            });
+        }
+        window.onload = updateEvents;
+
+        document.getElementById('ctrlForm').onsubmit = async (e) => {
             e.preventDefault();
             btn.disabled = true;
-            log.innerText = "Crypted Event Request...";
-
+            logContent.innerText = "UPLINKING...";
             try {
-                const response = await fetch('/api/send', { method: 'POST', body: new FormData(form) });
+                const response = await fetch('/api/send', { method: 'POST', body: new FormData(e.target) });
                 const result = await response.json();
-                log.innerText = result.message;
+                logContent.innerText = result.message.toUpperCase();
+                logContent.style.color = result.message.includes("Erfolgreich") ? "#00ffcc" : "#ff8c00";
             } catch (err) {
-                log.innerText = "Fehler bei der Übertragung.";
-            } finally {
-                btn.disabled = false;
-            }
+                logContent.innerText = "CONNECTION FAILED";
+                logContent.style.color = "#ff4444";
+            } finally { btn.disabled = false; }
         };
     </script>
 </body>
