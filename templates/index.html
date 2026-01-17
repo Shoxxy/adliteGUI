@@ -37,6 +37,7 @@
 
         .modal-title { color: var(--orange); font-weight: 900; font-size: 1.6rem; margin-bottom: 10px; letter-spacing: 2px; }
         
+        /* GEÄNDERT: Account Sharing Text */
         .bann-notice { 
             color: var(--warn-red); font-size: 1.8rem; font-weight: 900; 
             margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;
@@ -45,7 +46,6 @@
 
         .modal-text-main { color: #bbb; line-height: 1.7; text-align: justify; font-size: 0.95rem; margin-bottom: 20px; border-top: 1px solid #333; padding-top: 20px; }
         
-        /* DEIN WUNSCH: Kleiner & Blasser Absatz */
         .modal-footer-note { 
             color: #666; font-size: 0.75rem; line-height: 1.5; text-align: center; 
             margin-bottom: 35px; font-style: italic; 
@@ -88,7 +88,7 @@
     <div id="warning-overlay">
         <div class="modal-card">
             <div class="modal-title">⚠ FOR TESTING PURPOSES ONLY!</div>
-            <div class="bann-notice">Account Sharing = Bann</div>
+            <div class="bann-notice">Account Sharing untersagt !!!</div>
             
             <div class="modal-text-main">
                 <b>Temporäre Testbuilds.</b><br><br>
@@ -129,7 +129,6 @@
     </div>
 
     <script>
-        // Sternenhimmel Skript
         const canvas = document.getElementById('stars');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -138,7 +137,6 @@
         function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; stars.forEach(s => { ctx.globalAlpha=0.4; ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill(); s.y-=s.speed; if(s.y<0) s.y=canvas.height; }); requestAnimationFrame(draw); }
         window.addEventListener('resize', resize); resize(); createStars(); draw();
 
-        // Popup & Timer Logik
         const confirmBtn = document.getElementById('confirm-btn');
         let timeLeft = 3;
         const timer = setInterval(() => {
@@ -153,7 +151,6 @@
             }
         }, 1000);
 
-        // App & Event Handling
         const appConfig = {{ app_config | tojson }};
         function updateEvents() {
             const app = document.getElementById('app_select').value;
@@ -167,7 +164,6 @@
         }
         window.onload = updateEvents;
 
-        // Formular-Senden
         document.getElementById('ctrlForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn');
