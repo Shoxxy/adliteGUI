@@ -1,7 +1,7 @@
-fastapi
-uvicorn
+fastapi>=0.115.0
+uvicorn>=0.31.0
 jinja2
 requests
 python-multipart
-starlette
-itsdangerous
+starlette>=0.40.0
+itsdangerous>=2.2.0
