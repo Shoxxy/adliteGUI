@@ -3,123 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuStoolz Lite Beta | Adjust Controller</title>
+    <title>SuStoolz Lite Beta | Dashboard</title>
     <style>
         :root {
             --bg-deep: #0a0a0b;
             --card-bg: rgba(20, 20, 22, 0.95);
             --gold: #d4af37;
-            --gold-bright: #f9e5af;
             --orange: #ff8c00;
+            --warn-red: #ff4444;
         }
 
         body { 
-            background: var(--bg-deep);
-            color: #f0f0f0; 
-            font-family: 'Inter', sans-serif; 
-            display: flex; justify-content: center; align-items: center; 
+            background: var(--bg-deep); color: #f0f0f0; 
+            font-family: 'Inter', sans-serif; display: flex; 
+            justify-content: center; align-items: center; 
             min-height: 100vh; margin: 0; overflow: hidden;
         }
 
         canvas { position: absolute; top: 0; left: 0; z-index: 0; }
 
+        /* POPUP MODAL */
+        #warning-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; backdrop-filter: blur(12px);
+        }
+
+        .modal-card {
+            background: #161618; border: 2px solid var(--orange);
+            padding: 40px; border-radius: 24px; width: 90%; max-width: 580px;
+            text-align: center; box-shadow: 0 0 60px rgba(255, 140, 0, 0.25);
+        }
+
+        .modal-title { color: var(--orange); font-weight: 900; font-size: 1.6rem; margin-bottom: 10px; letter-spacing: 2px; }
+        
+        .bann-notice { 
+            color: var(--warn-red); font-size: 1.8rem; font-weight: 900; 
+            margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+        }
+
+        .modal-text-main { color: #bbb; line-height: 1.7; text-align: justify; font-size: 0.95rem; margin-bottom: 20px; border-top: 1px solid #333; padding-top: 20px; }
+        
+        /* DEIN WUNSCH: Kleiner & Blasser Absatz */
+        .modal-footer-note { 
+            color: #666; font-size: 0.75rem; line-height: 1.5; text-align: center; 
+            margin-bottom: 35px; font-style: italic; 
+        }
+        
+        #confirm-btn {
+            background: #2a2a2a; color: #555; padding: 16px 45px; 
+            border: none; border-radius: 12px; font-weight: 900; 
+            cursor: not-allowed; transition: all 0.4s ease; text-transform: uppercase;
+        }
+
+        #confirm-btn.ready {
+            background: linear-gradient(45deg, var(--orange), var(--gold));
+            color: #000; cursor: pointer; box-shadow: 0 8px 20px rgba(255,140,0,0.3);
+        }
+
+        /* DASHBOARD DESIGN */
         .card { 
-            background: var(--card-bg); 
-            padding: 40px; border-radius: 24px; 
-            border: 1px solid rgba(212, 175, 55, 0.15); 
-            width: 100%; max-width: 460px; 
-            backdrop-filter: blur(20px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+            background: var(--card-bg); padding: 40px; border-radius: 24px; 
+            border: 1px solid rgba(212,175,55,0.15); width: 100%; 
+            max-width: 460px; backdrop-filter: blur(20px); 
             z-index: 10; position: relative;
         }
 
-        /* Logo Bereich */
-        .logo-container { text-align: center; margin-bottom: 30px; }
         .logo-main {
-            font-size: 3.8rem; font-weight: 900; margin: 0;
-            background: linear-gradient(to bottom, var(--gold-bright), var(--gold), var(--orange));
+            font-size: 3.5rem; font-weight: 900; margin: 0; text-align: center;
+            background: linear-gradient(to bottom, #f9e5af, var(--gold), var(--orange));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            transform: skew(-6deg); filter: drop-shadow(0 0 10px rgba(212,175,55,0.2));
-        }
-        .logo-sub {
-            font-size: 1rem; color: #555; text-transform: uppercase;
-            letter-spacing: 10px; display: block; margin-top: -10px;
+            transform: skew(-6deg); margin-bottom: 20px;
         }
 
-        /* Formular */
-        label { display: block; margin-bottom: 8px; color: var(--gold); font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; }
-        .input-group { margin-bottom: 20px; }
-        select, input { 
-            width: 100%; padding: 14px; background: rgba(0,0,0,0.4); 
-            border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; 
-            color: #fff; font-size: 0.9rem; outline: none; transition: 0.3s;
-        }
-        select:focus, input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.1); }
-
-        button { 
-            width: 100%; padding: 16px; 
-            background: linear-gradient(135deg, var(--gold), var(--orange)); 
-            color: #000; border: none; border-radius: 10px; 
-            font-weight: 900; text-transform: uppercase; cursor: pointer;
-            letter-spacing: 2px; transition: 0.3s;
-        }
-        button:hover { transform: translateY(-2px); filter: brightness(1.2); box-shadow: 0 10px 20px rgba(212,175,55,0.2); }
-
-        #log-container {
-            margin-top: 30px; padding: 15px; background: rgba(0,0,0,0.6);
-            border-radius: 10px; border-left: 3px solid var(--gold);
-            font-family: monospace; font-size: 0.8rem; text-align: center;
-        }
-
-        .logout { display: block; text-align: center; margin-top: 25px; color: #444; text-decoration: none; font-size: 0.7rem; letter-spacing: 1px; }
-        .logout:hover { color: var(--gold); }
+        label { display: block; margin-top: 15px; margin-bottom: 5px; color: var(--gold); font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; }
+        select, input { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; outline: none; box-sizing: border-box; }
+        button#btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 25px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
     <canvas id="stars"></canvas>
 
-    <div class="card">
-        <div class="logo-container">
-            <h1 class="logo-main">SuStoolz</h1>
-            <span class="logo-sub">Lite Beta</span>
+    <div id="warning-overlay">
+        <div class="modal-card">
+            <div class="modal-title">⚠ FOR TESTING PURPOSES ONLY!</div>
+            <div class="bann-notice">Account Sharing = Bann</div>
+            
+            <div class="modal-text-main">
+                <b>Temporäre Testbuilds.</b><br><br>
+                Wenn Offer-Steps als „Unknown“ angezeigt werden, ist in diesem Fall die Reihenfolge fortlaufend (1, 2, 3 usw.). 
+                Leere Steps sind offerbedingt immer dazwischen.
+            </div>
+
+            <div class="modal-footer-note">
+                Management-System inkl. 24/7 Automatic Event Tracking – auf Anfrage wie gehabt. 
+                Wenn ihr Fehler, Bugs oder Ähnliches seht, bitte PN an den Admin...
+            </div>
+
+            <button id="confirm-btn">Sicherheitsscan (3s)</button>
         </div>
+    </div>
 
+    <div class="card">
+        <h1 class="logo-main">SuStoolz</h1>
         <form id="ctrlForm">
-            <div class="input-group">
-                <label>TARGET APP</label>
-                <select name="app_name" id="app_select" onchange="updateEvents()">
-                    {% for app_name in app_config.keys() %}
-                    <option value="{{ app_name }}">{{ app_name.upper() }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label>ENGINE / PLATFORM</label>
-                <select name="platform">
-                    <option value="android">ANDROID (GPS_ADID)</option>
-                    <option value="ios">IOS (IDFA)</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label>DEVICE IDENTITY</label>
-                <input type="text" name="device_id" placeholder="ID eingeben..." required>
-            </div>
-
-            <div class="input-group">
-                <label>COMMAND TRIGGER</label>
-                <select name="event_name" id="event_select"></select>
-            </div>
-
+            <label>TARGET APP</label>
+            <select name="app_name" id="app_select" onchange="updateEvents()">
+                {% for app_name in app_config.keys() %}
+                <option value="{{ app_name }}">{{ app_name.upper() }}</option>
+                {% endfor %}
+            </select>
+            <label>ENGINE</label>
+            <select name="platform">
+                <option value="android">ANDROID ENGINE</option>
+                <option value="ios">IOS ENGINE</option>
+            </select>
+            <label>DEVICE IDENTITY</label>
+            <input type="text" name="device_id" placeholder="ID eingeben..." required>
+            <label>TRIGGER COMMAND</label>
+            <select name="event_name" id="event_select"></select>
             <button type="submit" id="btn">Execute Injection</button>
         </form>
-
-        <div id="log-container">
-            <span id="log-content" style="color: var(--gold);">SYSTEM ONLINE</span>
-        </div>
-
-        <a href="/logout" class="logout">TERMINATE_SESSION</a>
+        <div id="log-container" style="margin-top:25px; text-align:center; color:var(--gold); font-family:monospace; font-size:0.8rem; letter-spacing: 1px;">CORE STATUS: ONLINE</div>
     </div>
 
     <script>
@@ -128,55 +134,54 @@
         const ctx = canvas.getContext('2d');
         let stars = [];
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        function createStars() {
-            stars = [];
-            for(let i=0; i<180; i++) {
-                stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*1.2, speed: Math.random()*0.15 });
-            }
-        }
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ffffff';
-            stars.forEach(s => {
-                ctx.globalAlpha = Math.random() * 0.4 + 0.3;
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
-                s.y -= s.speed; if(s.y < 0) s.y = canvas.height;
-            });
-            requestAnimationFrame(draw);
-        }
+        function createStars() { stars = []; for(let i=0; i<180; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*1.3, speed: Math.random()*0.12 }); }
+        function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; stars.forEach(s => { ctx.globalAlpha=0.4; ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill(); s.y-=s.speed; if(s.y<0) s.y=canvas.height; }); requestAnimationFrame(draw); }
         window.addEventListener('resize', resize); resize(); createStars(); draw();
 
-        // App-Logik
-        const appConfig = {{ app_config | tojson }};
-        const appSelect = document.getElementById('app_select');
-        const eventSelect = document.getElementById('event_select');
-        const logContent = document.getElementById('log-content');
-        const btn = document.getElementById('btn');
+        // Popup & Timer Logik
+        const confirmBtn = document.getElementById('confirm-btn');
+        let timeLeft = 3;
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) {
+                confirmBtn.innerText = `Sicherheitsscan (${timeLeft}s)`;
+            } else {
+                clearInterval(timer);
+                confirmBtn.innerText = "ZUGRIFF BESTÄTIGEN";
+                confirmBtn.classList.add('ready');
+                confirmBtn.onclick = () => document.getElementById('warning-overlay').style.display = 'none';
+            }
+        }, 1000);
 
+        // App & Event Handling
+        const appConfig = {{ app_config | tojson }};
         function updateEvents() {
-            const selectedApp = appSelect.value;
-            const events = appConfig[selectedApp] || [];
-            eventSelect.innerHTML = '';
-            events.forEach(event => {
+            const app = document.getElementById('app_select').value;
+            const select = document.getElementById('event_select');
+            select.innerHTML = '';
+            (appConfig[app] || []).forEach(e => {
                 const opt = document.createElement('option');
-                opt.value = event; opt.innerHTML = event.toUpperCase();
-                eventSelect.appendChild(opt);
+                opt.value = e; opt.innerHTML = e.toUpperCase();
+                select.appendChild(opt);
             });
         }
         window.onload = updateEvents;
 
+        // Formular-Senden
         document.getElementById('ctrlForm').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('btn');
+            const log = document.getElementById('log-container');
             btn.disabled = true;
-            logContent.innerText = "UPLINKING...";
+            log.innerText = "UPLINKING...";
             try {
                 const response = await fetch('/api/send', { method: 'POST', body: new FormData(e.target) });
                 const result = await response.json();
-                logContent.innerText = result.message.toUpperCase();
-                logContent.style.color = result.message.includes("Erfolgreich") ? "#00ffcc" : "#ff8c00";
-            } catch (err) {
-                logContent.innerText = "CONNECTION FAILED";
-                logContent.style.color = "#ff4444";
+                log.innerText = result.message.toUpperCase();
+                log.style.color = result.message.includes("Erfolgreich") ? "#00ffcc" : "var(--orange)";
+            } catch {
+                log.innerText = "CONNECTION FAILED";
+                log.style.color = "var(--warn-red)";
             } finally { btn.disabled = false; }
         };
     </script>
