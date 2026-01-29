@@ -3,182 +3,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuStoolz Lite Beta | Dashboard</title>
+    <title>SuStoolz | Dashboard</title>
     <style>
         :root {
-            --bg-deep: #0a0a0b;
-            --card-bg: rgba(20, 20, 22, 0.95);
-            --gold: #d4af37;
-            --orange: #ff8c00;
-            --warn-red: #ff4444;
+            /* NEUES FARBSCHEMA: TOXIC GREEN / BIOHAZARD THEME */
+            --bg-core: #0a0c00; /* Sehr dunkles Grüngeschwärz */
+            --bg-dark: #111405; 
+            --glass: rgba(20, 35, 10, 0.85); /* Dunkelgrünes Glas */
+            --border: rgba(173, 255, 47, 0.25); /* Giftgrüner Rand (GreenYellow) */
+            --accent: #adff2f; /* Knalliges Giftgrün als Akzent */
+            --accent-glow: rgba(173, 255, 47, 0.6);
+            --text-main: #e8ffe8; /* Helles Grünweiß */
+            --text-dim: #8a9a7a;
+            --neon-green: #39ff14; /* Neon für Logs */
+            --danger: #ff3300;
         }
 
-        body { 
-            background: var(--bg-deep); color: #f0f0f0; 
-            font-family: 'Inter', sans-serif; display: flex; 
-            justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; overflow: hidden;
+        body {
+            background-color: var(--bg-core);
+            /* Subtiler grüner Schein im Hintergrund */
+            background-image: radial-gradient(circle at 50% -20%, rgba(57, 255, 20, 0.15) 0%, var(--bg-core) 70%);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        canvas { position: absolute; top: 0; left: 0; z-index: 0; }
-
-        /* POPUP MODAL */
-        #warning-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 9999; backdrop-filter: blur(12px);
+        /* --- BANNER AREA --- */
+        .top-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 15px;
         }
 
-        .modal-card {
-            background: #161618; border: 2px solid var(--orange);
-            padding: 40px; border-radius: 24px; width: 90%; max-width: 580px;
-            text-align: center; box-shadow: 0 0 60px rgba(255, 140, 0, 0.25);
+        .banner-img {
+            width: 100%;
+            height: auto; /* Automatische Größenanpassung */
+            display: block;
+            border-radius: 12px 12px 0 0; /* Oben abgerundet */
+            border: 1px solid var(--border);
+            border-bottom: none;
+            box-shadow: 0 -5px 30px var(--accent-glow);
         }
 
-        .modal-title { color: var(--orange); font-weight: 900; font-size: 1.6rem; margin-bottom: 10px; letter-spacing: 2px; }
+        /* --- NAVIGATION --- */
+        .main-nav {
+            display: flex;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 12px 12px; /* Unten abgerundet */
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-dim);
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
         
-        /* GEÄNDERT: Account Sharing Text */
-        .bann-notice { 
-            color: var(--warn-red); font-size: 1.8rem; font-weight: 900; 
-            margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;
-            text-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+        /* Aktiver Link leuchtet */
+        .nav-link.active, .nav-link:hover {
+            color: var(--bg-core);
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        .modal-text-main { color: #bbb; line-height: 1.7; text-align: justify; font-size: 0.95rem; margin-bottom: 20px; border-top: 1px solid #333; padding-top: 20px; }
+        .user-badge { margin-left: auto; font-size: 0.9rem; color: var(--text-dim); display: flex; align-items: center; }
+        .logout { color: var(--danger); text-decoration: none; margin-left: 15px; font-weight: bold; padding: 5px 10px; border: 1px solid rgba(255, 51, 0, 0.3); border-radius: 4px;}
+        .logout:hover { background: rgba(255, 51, 0, 0.2); }
+
+        /* --- MAIN GRID LAYOUT --- */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            /* Höhe anpassen, damit es trotz Banner auf den Screen passt */
+            height: calc(80vh - 100px); 
+            min-height: 600px;
+        }
+
+        /* PANELS */
+        .panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow-y: auto;
+            position: relative;
+        }
         
-        .modal-footer-note { 
-            color: #666; font-size: 0.75rem; line-height: 1.5; text-align: center; 
-            margin-bottom: 35px; font-style: italic; 
+        /* Title Update */
+        h1.panel-title { 
+            margin: 0 0 20px 0; 
+            font-size: 1.8rem; 
+            color: var(--accent); 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            text-shadow: 0 0 10px var(--accent-glow);
         }
         
-        #confirm-btn {
-            background: #2a2a2a; color: #555; padding: 16px 45px; 
-            border: none; border-radius: 12px; font-weight: 900; 
-            cursor: not-allowed; transition: all 0.4s ease; text-transform: uppercase;
+        .edition-tag {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            vertical-align: middle;
+            margin-left: 10px;
+            letter-spacing: 0;
+            text-transform: none;
+            background: rgba(173, 255, 47, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
         }
 
-        #confirm-btn.ready {
-            background: linear-gradient(45deg, var(--orange), var(--gold));
-            color: #000; cursor: pointer; box-shadow: 0 8px 20px rgba(255,140,0,0.3);
-        }
+        /* FORM ELEMENTS - Toxic Style */
+        label { color: var(--accent); letter-spacing: 1px; font-size: 0.7rem; margin-top: 15px; }
+        input, select { background: rgba(0,0,0,0.6); border-color: var(--border); color: var(--accent); }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        /* DASHBOARD DESIGN */
-        .card { 
-            background: var(--card-bg); padding: 40px; border-radius: 24px; 
-            border: 1px solid rgba(212,175,55,0.15); width: 100%; 
-            max-width: 460px; backdrop-filter: blur(20px); 
-            z-index: 10; position: relative;
-        }
+        /* MODE SWITCHER - Green */
+        .mode-btn { background: #0a1000; border-color: var(--border); color: var(--text-dim); }
+        .mode-btn.active { background: var(--accent); color: var(--bg-core); box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent); }
 
-        .logo-main {
-            font-size: 3.5rem; font-weight: 900; margin: 0; text-align: center;
-            background: linear-gradient(to bottom, #f9e5af, var(--gold), var(--orange));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            transform: skew(-6deg); margin-bottom: 20px;
+        /* BUTTON - Changed Text */
+        #executeBtn {
+            margin-top: auto;
+            background: linear-gradient(135deg, var(--accent), #7cb300);
+            color: var(--bg-core);
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px rgba(173, 255, 47, 0.4);
         }
+        #executeBtn:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--accent-glow); }
 
-        label { display: block; margin-top: 15px; margin-bottom: 5px; color: var(--gold); font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; }
-        select, input { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; outline: none; box-sizing: border-box; }
-        button#btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 25px; letter-spacing: 2px; }
+        /* LOG WINDOW - Matrix Style Green */
+        #log-window { background: #050800; border-color: var(--border); color: var(--neon-green); }
+        .log-entry { border-bottom-color: #1a2505; }
+        .log-ts { color: #557722; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <canvas id="stars"></canvas>
 
-    <div id="warning-overlay">
-        <div class="modal-card">
-            <div class="modal-title">⚠ FOR TESTING PURPOSES ONLY!</div>
-            <div class="bann-notice">Account Sharing untersagt !!!</div>
+    <div class="top-container">
+        <img src="/static/banner.png" alt="SusToolZ Banner" class="banner-img">
+        
+        <nav class="main-nav">
+            <a href="/" class="nav-link {% if current_page == 'home' %}active{% endif %}">Dashboard</a>
+            <a href="/repeat" class="nav-link {% if current_page == 'repeat' %}active{% endif %}">Empfohlen Repeat</a>
             
-            <div class="modal-text-main">
-                <b>Temporäre Testbuilds.</b><br><br>
-                Wenn Offer-Steps als „Unknown“ angezeigt werden, ist in diesem Fall die Reihenfolge fortlaufend (1, 2, 3 usw.). 
-                Leere Steps sind offerbedingt immer dazwischen.
+            <div class="user-badge">
+                 Operator: <span style="color:var(--accent); margin-left:5px;">{{ user }}</span> 
+                 <a href="/logout" class="logout">ABMELDEN</a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-grid">
+        <div class="panel">
+            <h1 class="panel-title">
+                SusToolZ 
+                <span class="edition-tag">(Empfohlen Edition xd)</span>
+            </h1>
+
+            <label style="margin-top:0;">OPERATION MODE</label>
+            <div class="mode-toggles">
+                <button type="button" class="mode-btn active" onclick="setMode('single')">SINGLE</button>
+                <button type="button" class="mode-btn" onclick="setMode('credit_all')">CREDIT ALL</button>
+                <button type="button" class="mode-btn" onclick="setMode('timer')">TIMER</button>
             </div>
 
-            <div class="modal-footer-note">
-                Management-System inkl. 24/7 Automatic Event Tracking – auf Anfrage wie gehabt. 
-                Wenn ihr Fehler, Bugs oder Ähnliches seht, bitte PN an den Admin...
-            </div>
+            <form id="controlForm">
+                <input type="hidden" name="mode" id="modeInput" value="single">
 
-            <button id="confirm-btn">Sicherheitsscan (3s)</button>
+                <label>APP SELECTION</label>
+                <select name="app_name" id="appSelect" onchange="updateEvents()">
+                    {% for app_name in app_config.keys() %}
+                    <option value="{{ app_name }}">{{ app_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>PLATFORM</label>
+                <select name="platform">
+                    <option value="android">ANDROID (GAID)</option>
+                    <option value="ios">IOS (IDFA)</option>
+                </select>
+
+                <label>DEVICE ID</label>
+                <input type="text" name="device_id" placeholder="xxxx-xxxx-xxxx-xxxx" required>
+
+                <div id="singleParams">
+                    <label>EVENT TRIGGER</label>
+                    <select name="event_name" id="eventSelect"></select>
+                </div>
+
+                <div id="timerParams" class="hidden">
+                     <label>START TERMIN (Optional)</label>
+                     <input type="datetime-local" name="start_time" id="startTimeInput" style="color-scheme: dark;">
+                     <div style="margin-top:5px; margin-bottom:15px; font-size:0.7rem; color:var(--text-dim);">
+                         Leer lassen = Sofort starten.
+                     </div>
+ 
+                    <label>MIN DELAY (HOURS)</label>
+                    <input type="number" name="delay_min" step="0.1" value="1.0">
+                    <label>MAX DELAY (HOURS)</label>
+                    <input type="number" name="delay_max" step="0.1" value="5.0">
+                    <div style="margin-top:10px; font-size:0.7rem; color:var(--text-dim);">
+                        Random Intervall zwischen Events.
+                    </div>
+                </div>
+
+                <div id="allParams" class="hidden" style="margin-top:15px; font-size:0.75rem; color:var(--accent);">
+                    ⚠ Führt ALLE Events dieser App sequentiell aus.
+                </div>
+
+                <button type="submit" id="executeBtn">Credit Event</button>
+            </form>
+        </div>
+
+        <div class="panel" style="padding:0; border:none; background:transparent; box-shadow:none;">
+            <div class="panel" style="height:100%; padding-bottom:10px;">
+                <h1 class="panel-title" style="font-size:1.2rem;">Live Uplink</h1>
+                <div id="log-window">
+                    <div class="log-entry"><span class="log-ts">SYS</span> SusToolZ "Empfohlen Edition" initialized.</div>
+                    <div class="log-entry"><span class="log-ts">SYS</span> Awaiting inputs...</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <h1 class="logo-main">SuStoolz</h1>
-        <form id="ctrlForm">
-            <label>TARGET APP</label>
-            <select name="app_name" id="app_select" onchange="updateEvents()">
-                {% for app_name in app_config.keys() %}
-                <option value="{{ app_name }}">{{ app_name.upper() }}</option>
-                {% endfor %}
-            </select>
-            <label>ENGINE</label>
-            <select name="platform">
-                <option value="android">ANDROID ENGINE</option>
-                <option value="ios">IOS ENGINE</option>
-            </select>
-            <label>DEVICE IDENTITY</label>
-            <input type="text" name="device_id" placeholder="ID eingeben..." required>
-            <label>TRIGGER COMMAND</label>
-            <select name="event_name" id="event_select"></select>
-            <button type="submit" id="btn">Execute Injection</button>
-        </form>
-        <div id="log-container" style="margin-top:25px; text-align:center; color:var(--gold); font-family:monospace; font-size:0.8rem; letter-spacing: 1px;">CORE STATUS: ONLINE</div>
-    </div>
-
     <script>
-        const canvas = document.getElementById('stars');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        function createStars() { stars = []; for(let i=0; i<180; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*1.3, speed: Math.random()*0.12 }); }
-        function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; stars.forEach(s => { ctx.globalAlpha=0.4; ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill(); s.y-=s.speed; if(s.y<0) s.y=canvas.height; }); requestAnimationFrame(draw); }
-        window.addEventListener('resize', resize); resize(); createStars(); draw();
-
-        const confirmBtn = document.getElementById('confirm-btn');
-        let timeLeft = 3;
-        const timer = setInterval(() => {
-            timeLeft--;
-            if (timeLeft > 0) {
-                confirmBtn.innerText = `Sicherheitsscan (${timeLeft}s)`;
-            } else {
-                clearInterval(timer);
-                confirmBtn.innerText = "ZUGRIFF BESTÄTIGEN";
-                confirmBtn.classList.add('ready');
-                confirmBtn.onclick = () => document.getElementById('warning-overlay').style.display = 'none';
-            }
-        }, 1000);
-
         const appConfig = {{ app_config | tojson }};
-        function updateEvents() {
-            const app = document.getElementById('app_select').value;
-            const select = document.getElementById('event_select');
-            select.innerHTML = '';
-            (appConfig[app] || []).forEach(e => {
-                const opt = document.createElement('option');
-                opt.value = e; opt.innerHTML = e.toUpperCase();
-                select.appendChild(opt);
-            });
+        
+        function setMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('modeInput').value = mode;
+            document.getElementById('singleParams').classList.toggle('hidden', mode !== 'single');
+            document.getElementById('timerParams').classList.toggle('hidden', mode !== 'timer');
+            document.getElementById('allParams').classList.toggle('hidden', mode !== 'credit_all');
         }
-        window.onload = updateEvents;
 
-        document.getElementById('ctrlForm').onsubmit = async (e) => {
+        function updateEvents() {
+            const appName = document.getElementById('appSelect').value;
+            const eventSelect = document.getElementById('eventSelect');
+            eventSelect.innerHTML = '';
+            if(appConfig[appName]) {
+                appConfig[appName].forEach(evt => {
+                    let opt = document.createElement('option');
+                    opt.value = evt; opt.text = evt; eventSelect.appendChild(opt);
+                });
+            }
+        }
+        updateEvents();
+
+        document.getElementById('controlForm').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btn');
-            const log = document.getElementById('log-container');
+            const btn = document.getElementById('executeBtn');
+            const logWin = document.getElementById('log-window');
+            
+            // Coole Animation beim Klicken
+            btn.innerHTML = "Processing...";
+            btn.style.background = "#333"; btn.style.color = "var(--accent)";
             btn.disabled = true;
-            log.innerText = "UPLINKING...";
+
+            const formData = new FormData(e.target);
+
+            const tempLog = document.createElement('div');
+            tempLog.className = 'log-entry';
+            tempLog.innerHTML = `<span class="log-ts" style="color:var(--accent);">CMD</span> Transmitting to Zone B...`;
+            logWin.appendChild(tempLog);
+            logWin.scrollTop = logWin.scrollHeight;
+
             try {
-                const response = await fetch('/api/send', { method: 'POST', body: new FormData(e.target) });
-                const result = await response.json();
-                log.innerText = result.message.toUpperCase();
-                log.style.color = result.message.includes("Erfolgreich") ? "#00ffcc" : "var(--orange)";
-            } catch {
-                log.innerText = "CONNECTION FAILED";
-                log.style.color = "var(--warn-red)";
-            } finally { btn.disabled = false; }
+                const res = await fetch('/api/proxy_send', { method: 'POST', body: formData });
+                const data = await res.json();
+
+                const newEntry = document.createElement('div');
+                newEntry.className = 'log-entry';
+                // Farben anpassen ans neue Theme
+                newEntry.style.color = data.success ? "var(--neon-green)" : "var(--danger)";
+                newEntry.innerHTML = data.log_entry || "<span class='log-ts'>ERR</span> Unknown Server Response";
+                
+                logWin.appendChild(newEntry);
+
+            } catch (err) {
+                const errEntry = document.createElement('div');
+                errEntry.className = 'log-entry';
+                errEntry.style.color = "var(--danger)";
+                errEntry.innerHTML = "<span class='log-ts'>CRIT</span> Uplink failed. " + err;
+                logWin.appendChild(errEntry);
+            } finally {
+                // Button zurücksetzen
+                btn.innerHTML = "Credit Event";
+                btn.removeAttribute("style"); // Reset inline styles to CSS defaults
+                btn.disabled = false;
+                logWin.scrollTop = logWin.scrollHeight;
+            }
         };
     </script>
 </body>

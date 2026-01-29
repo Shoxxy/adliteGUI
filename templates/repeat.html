@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuStoolz | Empfohlen Repeat</title>
+    <style>
+        /* ... (KOPIERE HIER DEN KOMPLETTEN CSS INHALT AUS INDEX.HTML REIN) ... */
+        /* Um Redundanz zu vermeiden, kürze ich das hier ab. 
+           In der echten Datei muss der volle CSS Block von oben stehen. */
+           :root {
+            --bg-core: #0a0c00; 
+            --bg-dark: #111405; 
+            --glass: rgba(20, 35, 10, 0.85);
+            --border: rgba(173, 255, 47, 0.25);
+            --accent: #adff2f;
+            --accent-glow: rgba(173, 255, 47, 0.6);
+            --text-main: #e8ffe8;
+            --text-dim: #8a9a7a;
+            --neon-green: #39ff14;
+            --danger: #ff3300;
+        }
+        body {
+            background-color: var(--bg-core);
+            background-image: radial-gradient(circle at 50% -20%, rgba(57, 255, 20, 0.15) 0%, var(--bg-core) 70%);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .top-container { width: 100%; max-width: 1200px; margin-bottom: 15px; }
+        .banner-img { width: 100%; height: auto; display: block; border-radius: 12px 12px 0 0; border: 1px solid var(--border); border-bottom: none; box-shadow: 0 -5px 30px var(--accent-glow); }
+        .main-nav { display: flex; background: var(--glass); border: 1px solid var(--border); border-top: none; border-radius: 0 0 12px 12px; backdrop-filter: blur(10px); padding: 10px 20px; align-items: center; }
+        .nav-link { text-decoration: none; color: var(--text-dim); font-weight: 700; padding: 10px 20px; border-radius: 6px; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-right: 10px; }
+        .nav-link.active, .nav-link:hover { color: var(--bg-core); background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .user-badge { margin-left: auto; font-size: 0.9rem; color: var(--text-dim); display: flex; align-items: center; }
+        .logout { color: var(--danger); text-decoration: none; margin-left: 15px; font-weight: bold; padding: 5px 10px; border: 1px solid rgba(255, 51, 0, 0.3); border-radius: 4px;}
+        .logout:hover { background: rgba(255, 51, 0, 0.2); }
+        .main-grid { display: grid; grid-template-columns: 1fr; /* NUR 1 SPALTE HIER */ gap: 20px; width: 100%; max-width: 1200px; height: calc(80vh - 100px); min-height: 600px; }
+        .panel { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 16px; padding: 25px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow-y: auto; position: relative; }
+        h1.panel-title { margin: 0 0 20px 0; font-size: 1.8rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 0 10px var(--accent-glow); }
+
+        /* Spezifisch für diese Seite: Ein Platzhalter */
+        .placeholder-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-dim);
+            text-align: center;
+        }
+        .placeholder-icon { font-size: 4rem; color: var(--accent); margin-bottom: 20px; text-shadow: 0 0 20px var(--accent-glow); }
+    </style>
+</head>
+<body>
+
+    <div class="top-container">
+        <img src="/static/banner.png" alt="SusToolZ Banner" class="banner-img">
+        <nav class="main-nav">
+            <a href="/" class="nav-link {% if current_page == 'home' %}active{% endif %}">Dashboard</a>
+            <a href="/repeat" class="nav-link {% if current_page == 'repeat' %}active{% endif %}">Empfohlen Repeat</a>
+            
+            <div class="user-badge">
+                 Operator: <span style="color:var(--accent); margin-left:5px;">{{ user }}</span> 
+                 <a href="/logout" class="logout">ABMELDEN</a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-grid">
+        <div class="panel">
+            <h1 class="panel-title">Wiederkehrende Aufgaben</h1>
+            
+            <div class="placeholder-content">
+                <div class="placeholder-icon">☣</div>
+                <h2>Modul "Empfohlen Repeat" bereit.</h2>
+                <p>Hier können später spezielle Wiederholungs-Szenarien konfiguriert werden.</p>
+                <p style="font-size:0.8rem; margin-top:20px;">Status: Awaiting Implementation Constraints.</p>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
