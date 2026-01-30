@@ -3,191 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuStoolz | Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>SuStoolz | Sh0xxMod GUI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- NEUES FARBSCHEMA (Dark Grey Professional) --- */
+        /* --- CYBER BLUE THEME (Passend zum Banner) --- */
         :root {
-            --bg-main: #121212;      /* Sehr dunkler Hintergrund */
-            --bg-panel: #1e1e1e;     /* Panels etwas heller */
-            --bg-input: #2d2d2d;     /* Eingabefelder */
-            --border-color: #3a3a3a; /* Subtile Rahmen */
-            --text-primary: #e0e0e0; /* Haupttext hellgrau */
-            --text-secondary: #a0a0a0; /* Labels dunkler */
-            --accent-active: #4a4a4a; /* Aktive Elemente hervorheben */
-            --highlight-color: #ffffff; /* Wichtige Highlights */
-            --success-color: #4caf50;   /* Grün für Logs */
-            --error-color: #f44336;     /* Rot für Fehler */
+            --bg-deep: #020408;       /* Fast Schwarz */
+            --bg-panel: rgba(5, 15, 30, 0.85); /* Dunkelblau, transparent */
+            --bg-input: #0a1428;      /* Eingabefelder */
+            
+            --accent-cyan: #00f3ff;   /* Das helle Neon-Cyan aus dem Banner */
+            --accent-blue: #0055ff;   /* Dunkleres Blau für Tiefe */
+            --accent-glow: rgba(0, 243, 255, 0.4); /* Leuchteffekt */
+            
+            --text-main: #e0faff;     /* Fast Weiß mit Blaustich */
+            --text-dim: #6c8bba;      /* Abgedunkelter Text */
+            
+            --border-color: #1e3a5f;
+            --success: #00ff9d;
+            --error: #ff0055;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-deep);
+            background-image: 
+                linear-gradient(to bottom, rgba(0,0,0,0.8), var(--bg-deep)), 
+                repeating-linear-gradient(45deg, rgba(0, 243, 255, 0.03) 0px, rgba(0, 243, 255, 0.03) 1px, transparent 1px, transparent 10px);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             margin: 0;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
-        /* --- GRID LAYOUT (Aufgeräumt) --- */
+        /* --- HEADER BANNER --- */
+        .banner-wrapper {
+            width: 100%;
+            max-width: 1400px; /* Optional: Maximale Breite begrenzen */
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-blue);
+            box-shadow: 0 0 30px var(--accent-glow);
+            line-height: 0; /* Verhindert Lücken unter dem Bild */
+        }
+        
+        .banner-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* --- GRID LAYOUT --- */
         .main-grid {
             display: grid;
-            grid-template-columns: 400px 1fr; /* Feste Breite links, Rest rechts */
+            grid-template-columns: 400px 1fr;
             gap: 25px;
-            width: 100%;
-            max-width: 1200px;
-            height: 85vh;
-            max-height: 900px;
+            width: 95%;
+            max-width: 1400px;
+            height: calc(85vh - 100px); /* Höhe minus Banner */
+            min-height: 600px;
+            padding-bottom: 20px;
         }
 
-        /* --- PANELS (Solide & Sauber) --- */
+        /* --- PANELS --- */
         .panel {
             background: var(--bg-panel);
             border: 1px solid var(--border-color);
-            border-radius: 8px; /* Dezentere Rundung */
+            border-top: 3px solid var(--accent-cyan); /* Cyan Top Border */
+            border-radius: 4px;
             padding: 25px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* Weicher Schatten */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
             position: relative;
             overflow-y: auto;
         }
 
         h1 {
-            margin: 0 0 25px 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--highlight-color);
+            margin: 0 0 20px 0;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--accent-glow);
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        /* --- FORM ELEMENTE (Einheitlich) --- */
-        form {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1; /* Damit der Submit Button unten landet */
-        }
+        /* --- FORM ELEMENTS --- */
+        form { display: flex; flex-direction: column; flex-grow: 1; }
 
         label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 8px; /* Abstand zum Input */
-            margin-top: 20px;   /* Abstand zum vorherigen Feld */
-            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+            margin-top: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         label:first-of-type { margin-top: 0; }
         
-        input, select, textarea {
+        input, select {
             width: 100%;
             background: var(--bg-input);
             border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 10px 12px;
-            border-radius: 4px;
-            font-family: inherit;
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 2px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            transition: border-color 0.2s, background 0.2s;
-            box-sizing: border-box; /* Wichtig für Padding */
+            transition: all 0.2s;
+            box-sizing: border-box;
         }
         
         input:focus, select:focus {
             outline: none;
-            border-color: #666;
-            background: #363636;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            background: #0f1e3c;
         }
 
-        /* --- MODE SWITCHER BUTTONS --- */
+        /* --- MODE SWITCHER --- */
         .mode-toggles {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            background: var(--bg-input);
-            padding: 4px;
-            border-radius: 6px;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: #000;
+            padding: 3px;
             border: 1px solid var(--border-color);
         }
         .mode-btn {
             flex: 1;
-            padding: 8px;
+            padding: 10px;
             background: transparent;
             border: none;
-            color: var(--text-secondary);
-            border-radius: 4px;
+            color: var(--text-dim);
             cursor: pointer;
-            font-weight: 500;
-            font-size: 0.85rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
             transition: all 0.2s;
         }
         .mode-btn.active {
-            background: var(--accent-active);
-            color: var(--highlight-color);
+            background: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 85, 255, 0.5);
         }
+        .mode-btn:hover:not(.active) { color: #fff; }
 
-        /* --- EXECUTE BUTTON --- */
+        /* --- ACTION BUTTON --- */
         #executeBtn {
-            margin-top: auto; /* Schiebt Button ganz nach unten */
-            background: var(--text-primary);
-            color: var(--bg-main);
-            border: none;
-            padding: 12px;
-            font-weight: 600;
-            border-radius: 4px;
-            cursor: pointer;
+            margin-top: auto;
+            background: linear-gradient(135deg, var(--accent-blue), #0033cc);
+            border: 1px solid var(--accent-cyan);
+            color: #fff;
+            padding: 15px;
+            font-weight: 800;
+            font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: background 0.2s;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
         }
         #executeBtn:hover {
-            background: #ffffff;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            box-shadow: 0 0 20px var(--accent-glow);
+            color: #000;
+            text-shadow: none;
         }
         #executeBtn:disabled {
-            background: #666;
+            background: #333;
+            border-color: #555;
+            color: #888;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
-        /* --- TERMINAL LOG --- */
+        /* --- TERMINAL OUTPUT --- */
         #log-window {
-            background: #0a0a0a; /* Etwas dunkler als das Panel */
+            background: #000000;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
             flex-grow: 1;
-            font-family: 'JetBrains Mono', 'Consolas', monospace; /* Monospace Font für Logs */
+            font-family: 'JetBrains Mono', monospace;
             padding: 15px;
             overflow-y: auto;
             font-size: 0.85rem;
-            color: var(--text-primary);
-            line-height: 1.5;
-            white-space: pre-wrap; /* Zeilenumbrüche erhalten */
+            color: var(--text-main);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
         
-        .log-entry { margin-bottom: 8px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px; }
-        .log-ts { color: #666; margin-right: 8px; font-size: 0.75rem; }
-        .log-success { color: var(--success-color); }
-        .log-error { color: var(--error-color); }
+        /* Custom Scrollbar for Cyber look */
+        #log-window::-webkit-scrollbar { width: 8px; }
+        #log-window::-webkit-scrollbar-track { background: #020408; }
+        #log-window::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 2px; }
+
+        .log-entry { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid #111; animation: fadeIn 0.3s ease; }
+        .log-ts { color: var(--accent-blue); margin-right: 10px; font-size: 0.75rem; font-weight: bold; }
+        .log-success { color: var(--success); text-shadow: 0 0 5px rgba(0, 255, 157, 0.3); }
+        .log-error { color: var(--error); text-shadow: 0 0 5px rgba(255, 0, 85, 0.3); }
+        .log-sys { color: var(--accent-cyan); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- HELPER --- */
         .hidden { display: none; }
-        .user-badge { position: absolute; top: 25px; right: 25px; font-size: 0.85rem; color: var(--text-secondary); }
-        .logout { color: var(--text-primary); text-decoration: none; margin-left: 10px; padding: 2px 6px; background: var(--bg-input); border-radius: 4px;}
-        .hint-text { margin-top: 6px; font-size: 0.75rem; color: #666; }
-        .warning-text { margin-top:15px; font-size:0.75rem; color: #ffab40; background: rgba(255, 171, 64, 0.1); padding: 8px; border-radius: 4px;}
+        .user-badge { font-size: 0.8rem; color: var(--text-dim); text-transform: none; letter-spacing: 0; }
+        .logout { color: var(--accent-cyan); text-decoration: none; margin-left: 10px; border: 1px solid var(--accent-cyan); padding: 2px 8px; border-radius: 2px; transition: 0.2s; }
+        .logout:hover { background: var(--accent-cyan); color: #000; }
+        .hint-text { margin-top: 6px; font-size: 0.7rem; color: var(--text-dim); }
+        .warning-text { margin-top:15px; font-size:0.75rem; color: #ffab40; background: rgba(255, 171, 64, 0.1); padding: 10px; border-left: 3px solid #ffab40;}
 
+        /* Mobile Responsive */
+        @media (max-width: 800px) {
+            .main-grid { grid-template-columns: 1fr; height: auto; }
+            .panel { min-height: 400px; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="banner-wrapper">
+        <img src="/static/banner.jpg" alt="SuStoolz Banner" class="banner-img">
+    </div>
+
     <div class="main-grid">
         <div class="panel">
-            <div class="user-badge">{{ user }} <a href="/logout" class="logout">Logout</a></div>
-            <h1>Control Unit</h1>
+            <h1>
+                Control Unit 
+                <span class="user-badge">{{ user }} <a href="/logout" class="logout">EXIT</a></span>
+            </h1>
 
             <form id="controlForm">
                 <label>OPERATION MODE</label>
@@ -198,21 +255,21 @@
                 </div>
                 <input type="hidden" name="mode" id="modeInput" value="single">
 
-                <label>APP SELECTION</label>
+                <label>TARGET APP</label>
                 <select name="app_name" id="appSelect" onchange="updateEvents()">
                     {% for app_name in app_config.keys() %}
                     <option value="{{ app_name }}">{{ app_name }}</option>
                     {% endfor %}
                 </select>
 
-                <label>PLATFORM</label>
+                <label>PLATFORM IDENTIFIER</label>
                 <select name="platform">
                     <option value="android">ANDROID (GAID)</option>
                     <option value="ios">IOS (IDFA)</option>
                 </select>
 
                 <label>DEVICE ID</label>
-                <input type="text" name="device_id" placeholder="xxxx-xxxx-xxxx-xxxx" required style="font-family: monospace;">
+                <input type="text" name="device_id" placeholder="xxxx-xxxx-xxxx-xxxx" required>
 
                 <div id="singleParams">
                     <label>EVENT TRIGGER</label>
@@ -220,33 +277,41 @@
                 </div>
 
                 <div id="timerParams" class="hidden">
-                    <label>START TERMIN (Optional)</label>
+                    <label>START TIME (Optional)</label>
                     <input type="datetime-local" name="start_time" id="startTimeInput">
-                    <div class="hint-text">Leer lassen für sofortigen Start.</div>
+                    <div class="hint-text">Leave empty for instant execution.</div>
 
-                    <label>MIN DELAY (Stunden)</label>
-                    <input type="number" name="delay_min" step="0.1" value="1.0" min="0">
-                    
-                    <label>MAX DELAY (Stunden)</label>
-                    <input type="number" name="delay_max" step="0.1" value="5.0" min="0">
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex:1;">
+                            <label>MIN DELAY (h)</label>
+                            <input type="number" name="delay_min" step="0.1" value="1.0" min="0">
+                        </div>
+                        <div style="flex:1;">
+                            <label>MAX DELAY (h)</label>
+                            <input type="number" name="delay_max" step="0.1" value="5.0" min="0">
+                        </div>
+                    </div>
                     
                     <div class="hint-text" id="timerHint">
-                        Events werden zufällig zwischen Min und Max Delay ausgeführt.
+                        Randomized delay between events.
                     </div>
                 </div>
 
                 <div id="allParamsWarning" class="hidden warning-text">
-                    ⚠ "Credit All" führt alle Events nacheinander aus. Nutze die Timer-Einstellungen oben für Abstände, oder setze beide auf 0 für maximale Geschwindigkeit.
+                    ⚠ <strong>BATCH MODE:</strong> Executes ALL events sequentially. Adjust Delays above to avoid ban risk.
                 </div>
 
-                <button type="submit" id="executeBtn">Befehl Senden</button>
+                <button type="submit" id="executeBtn">INITIATE UPLINK</button>
             </form>
         </div>
 
         <div class="panel">
-            <h1>System Output</h1>
+            <h1>System Output / Terminal</h1>
             <div id="log-window">
-                <div class="log-entry"><span class="log-ts">SYSTEM</span> Ready. Connected to Zone B Engine.</div>
+                <div class="log-entry"><span class="log-ts">SYSTEM</span> <span class="log-sys">Interface loaded. Uplink to Zone B initialized.</span></div>
+                {% if uplink_status != "Connected" %}
+                <div class="log-entry"><span class="log-ts">WARN</span> <span class="log-error">Zone C Connection Status: {{ uplink_status }}</span></div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -255,23 +320,16 @@
         const appConfig = {{ app_config | tojson }};
         
         function setMode(mode) {
-            // Update UI State
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            
-            // Set Hidden Input
             document.getElementById('modeInput').value = mode;
 
             const isSingle = mode === 'single';
-            const isTimer = mode === 'timer';
             const isAll = mode === 'credit_all';
 
-            // Show/Hide Sections
             document.getElementById('singleParams').classList.toggle('hidden', !isSingle);
-            // Timer inputs werden sowohl für Timer als auch Credit All Modus benötigt
             document.getElementById('timerParams').classList.toggle('hidden', isSingle);
             
-            // Spezieller Hinweis für Credit All
             document.getElementById('allParamsWarning').classList.toggle('hidden', !isAll);
             document.getElementById('timerHint').classList.toggle('hidden', isAll);
         }
@@ -291,35 +349,28 @@
             }
         }
 
-        // Init Events
-        if (Object.keys(appConfig).length > 0) {
-            updateEvents();
-        }
+        if (Object.keys(appConfig).length > 0) updateEvents();
 
-        // LOGIC
         document.getElementById('controlForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('executeBtn');
             const logWin = document.getElementById('log-window');
             
             btn.disabled = true;
-            btn.innerText = "Sende...";
+            btn.innerText = "TRANSMITTING...";
             
             const formData = new FormData(e.target);
-            const ts = new Date().toLocaleTimeString();
+            const now = new Date();
+            const ts = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0') + ":" + now.getSeconds().toString().padStart(2,'0');
 
-            // Log: Sending...
             const tempLog = document.createElement('div');
             tempLog.className = 'log-entry';
-            tempLog.innerHTML = `<span class="log-ts">${ts}</span> Transmitting command...`;
+            tempLog.innerHTML = `<span class="log-ts">${ts}</span> Sending payload to Zone C...`;
             logWin.appendChild(tempLog);
             logWin.scrollTop = logWin.scrollHeight;
 
             try {
-                const res = await fetch('/api/proxy_send', {
-                    method: 'POST',
-                    body: formData
-                });
+                const res = await fetch('/api/proxy_send', { method: 'POST', body: formData });
                 const data = await res.json();
 
                 const newEntry = document.createElement('div');
@@ -327,31 +378,28 @@
                 
                 let logContent = "";
                 if(data.success) {
-                     if(data.full_resp.http_code) {
-                         // Single Mode Response
+                     if(data.full_resp && data.full_resp.http_code) {
                         const statusClass = data.full_resp.http_code === 200 ? 'log-success' : 'log-error';
                         logContent = `<span class="${statusClass}">[HTTP ${data.full_resp.http_code}]</span> ${data.full_resp.server_response}`;
                      } else {
-                         // Queue/Timer Message
-                         logContent = `<span class="log-success">✔</span> ${data.full_resp.message}`;
+                         logContent = `<span class="log-success">✔ SUCCESS:</span> ${data.full_resp ? data.full_resp.message : "Command executed."}`;
                      }
                 } else {
-                    logContent = `<span class="log-error">✘ ERROR:</span> ${data.log_entry || data.message || "Unknown Error"}`;
+                    logContent = `<span class="log-error">✘ FAILURE:</span> ${data.log_entry || data.message || "Unknown Error"}`;
                 }
 
                 newEntry.innerHTML = `<span class="log-ts">${ts}</span> ${logContent}`;
-                
                 logWin.appendChild(newEntry);
 
             } catch (err) {
                 const errEntry = document.createElement('div');
-                errEntry.className = 'log-entry log-error';
-                errEntry.innerHTML = `<span class="log-ts">${ts}</span> CRITICAL UPLINK FAIL: ${err}`;
+                errEntry.className = 'log-entry';
+                errEntry.innerHTML = `<span class="log-ts">${ts}</span> <span class="log-error">CRITICAL NETWORK FAIL: ${err}</span>`;
                 logWin.appendChild(errEntry);
             } finally {
                 logWin.scrollTop = logWin.scrollHeight;
                 btn.disabled = false;
-                btn.innerText = "Befehl Senden";
+                btn.innerText = "INITIATE UPLINK";
             }
         };
     </script>
