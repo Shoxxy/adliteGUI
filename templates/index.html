@@ -47,139 +47,6 @@
             align-items: center;
         }
 
-        /* --- HEADER BANNER WITH SIDE STATUS --- */
-        .banner-wrapper {
-            width: 100%;
-            max-width: 1400px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: stretch;
-        }
-
-        .banner-img {
-            flex: 1;
-            height: auto;
-            display: block;
-            object-fit: cover;
-        }
-
-        /* --- STATUS OVERLAYS (Links & Rechts vom Bild) --- */
-        .status-overlay {
-            width: 140px;
-            min-width: 140px;
-            background: linear-gradient(180deg, rgba(10, 10, 20, 0.98), rgba(5, 5, 15, 0.99));
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 15px 12px;
-            gap: 15px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .status-overlay.status-left {
-            border-right: none;
-            border-radius: 4px 0 0 4px;
-            border-left: 2px solid var(--success);
-        }
-
-        .status-overlay.status-right {
-            border-left: none;
-            border-radius: 0 4px 4px 0;
-            border-right: 2px solid var(--accent-secondary);
-        }
-
-        .status-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .status-item .label {
-            color: var(--text-dim);
-            text-transform: uppercase;
-            font-size: 0.55rem;
-            letter-spacing: 1px;
-        }
-
-        .status-item .value {
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Grüne Diode für System Online */
-        .diode {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 6px var(--success), 0 0 12px rgba(0, 255, 157, 0.4);
-            animation: pulse-diode 2s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-
-        .diode.offline {
-            background: var(--error);
-            box-shadow: 0 0 6px var(--error);
-            animation: none;
-        }
-
-        @keyframes pulse-diode {
-
-            0%,
-            100% {
-                opacity: 1;
-                box-shadow: 0 0 6px var(--success), 0 0 12px rgba(0, 255, 157, 0.4);
-            }
-
-            50% {
-                opacity: 0.6;
-                box-shadow: 0 0 3px var(--success), 0 0 6px rgba(0, 255, 157, 0.2);
-            }
-        }
-
-        .user-name {
-            color: var(--accent-primary);
-            font-weight: 600;
-            font-size: 0.75rem;
-        }
-
-        .user-status {
-            padding: 4px 8px;
-            background: rgba(0, 255, 157, 0.15);
-            border: 1px solid var(--success);
-            border-radius: 3px;
-            color: var(--success);
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-        .logout-btn {
-            color: var(--text-dim);
-            text-decoration: none;
-            padding: 6px 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 3px;
-            transition: all 0.2s;
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-align: center;
-            display: block;
-        }
-
-        .logout-btn:hover {
-            border-color: var(--error);
-            color: var(--error);
-            background: rgba(255, 51, 102, 0.1);
-        }
-
         /* --- GRID LAYOUT --- */
         .main-grid {
             display: grid;
@@ -187,9 +54,9 @@
             gap: 25px;
             width: 95%;
             max-width: 1400px;
-            height: calc(85vh - 150px);
-            min-height: 550px;
-            padding-bottom: 20px;
+            height: calc(95vh - 40px);
+            min-height: 600px;
+            padding: 20px 0;
         }
 
         /* --- PANELS --- */
@@ -455,59 +322,11 @@
             .panel {
                 min-height: 400px;
             }
-
-            .status-bar {
-                flex-direction: column;
-                gap: 10px;
-                padding: 15px;
-            }
-
-            .status-left,
-            .status-right {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
         }
     </style>
 </head>
 
 <body>
-
-    <div class="banner-wrapper">
-        <!-- Status Links neben dem Banner -->
-        <div class="status-overlay status-left">
-            <div class="status-item">
-                <div class="diode {% if uplink_status != 'Connected' %}offline{% endif %}"></div>
-                <span class="value">{% if uplink_status == 'Connected' %}ONLINE{% else %}OFFLINE{% endif %}</span>
-            </div>
-            <div class="status-item">
-                <span class="label">Apps</span>
-                <span class="value">{{ app_config.keys() | list | length }}</span>
-            </div>
-            <div class="status-item" id="datetime-display">
-                <span class="label">Zeit</span>
-                <span class="value" id="live-clock">--:--:--</span>
-            </div>
-        </div>
-
-        <img src="/static/banner.jpg" alt="SuStoolz Banner" class="banner-img">
-
-        <!-- Status Rechts neben dem Banner -->
-        <div class="status-overlay status-right">
-            <div class="status-item">
-                <span class="label">User</span>
-                <span class="user-name">{{ user }}</span>
-            </div>
-            <div class="status-item">
-                <span class="label">Status</span>
-                <span class="user-status">Active</span>
-            </div>
-            <div class="status-item">
-                <a href="/logout" class="logout-btn">Logout</a>
-            </div>
-        </div>
-    </div>
 
     <div class="main-grid">
         <div class="panel">
@@ -588,16 +407,6 @@
 
     <script>
         const appConfig = {{ app_config | tojson }};
-
-        // Live Clock Update
-        function updateClock() {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('live-clock').textContent = dateStr + ' | ' + timeStr;
-        }
-        updateClock();
-        setInterval(updateClock, 1000);
 
         function setMode(mode) {
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
