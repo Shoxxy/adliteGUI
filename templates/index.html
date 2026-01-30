@@ -1,25 +1,32 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuStoolz | Sh0xxMod GUI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         /* --- REFINED CYBER THEME (Less Blue, More Variety) --- */
         :root {
-            --bg-deep: #0a0a0f;           /* Tiefes Schwarz mit leichtem Violett */
+            --bg-deep: #0a0a0f;
+            /* Tiefes Schwarz mit leichtem Violett */
             --bg-panel: rgba(15, 15, 25, 0.9);
             --bg-input: #12121c;
-            
-            --accent-primary: #00e5ff;    /* Helles Cyan */
-            --accent-secondary: #7c4dff;  /* Violett */
-            --accent-tertiary: #ff6b35;   /* Orange */
+
+            --accent-primary: #00e5ff;
+            /* Helles Cyan */
+            --accent-secondary: #7c4dff;
+            /* Violett */
+            --accent-tertiary: #ff6b35;
+            /* Orange */
             --accent-glow: rgba(0, 229, 255, 0.3);
-            
+
             --text-main: #e8e8f0;
             --text-dim: #8888a0;
-            
+
             --border-color: #2a2a40;
             --success: #00ff9d;
             --error: #ff3366;
@@ -28,7 +35,7 @@
 
         body {
             background-color: var(--bg-deep);
-            background-image: 
+            background-image:
                 radial-gradient(ellipse at top, rgba(124, 77, 255, 0.08) 0%, transparent 50%),
                 radial-gradient(ellipse at bottom, rgba(0, 229, 255, 0.05) 0%, transparent 50%);
             color: var(--text-main);
@@ -40,118 +47,131 @@
             align-items: center;
         }
 
-        /* --- HEADER BANNER WITH STATUS BAR --- */
+        /* --- HEADER BANNER WITH SIDE STATUS --- */
         .banner-wrapper {
             width: 100%;
             max-width: 1400px;
             margin-bottom: 15px;
-            position: relative;
+            display: flex;
+            align-items: stretch;
         }
-        
+
         .banner-img {
-            width: 100%;
+            flex: 1;
             height: auto;
             display: block;
             object-fit: cover;
-            border-radius: 0 0 4px 4px;
         }
 
-        /* --- STATUS BAR (über/unter dem Banner) --- */
-        .status-bar {
+        /* --- STATUS OVERLAYS (Links & Rechts vom Bild) --- */
+        .status-overlay {
+            width: 140px;
+            min-width: 140px;
+            background: linear-gradient(180deg, rgba(10, 10, 20, 0.98), rgba(5, 5, 15, 0.99));
+            border: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: linear-gradient(90deg, rgba(0,0,0,0.9), rgba(20,20,35,0.95), rgba(0,0,0,0.9));
-            border-bottom: 1px solid var(--border-color);
+            flex-direction: column;
+            justify-content: center;
+            padding: 15px 12px;
+            gap: 15px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
         }
 
-        .status-left {
-            display: flex;
-            align-items: center;
-            gap: 25px;
+        .status-overlay.status-left {
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            border-left: 2px solid var(--success);
         }
 
-        .status-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
+        .status-overlay.status-right {
+            border-left: none;
+            border-radius: 0 4px 4px 0;
+            border-right: 2px solid var(--accent-secondary);
         }
 
         .status-item {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-dim);
+            flex-direction: column;
+            gap: 4px;
         }
 
         .status-item .label {
             color: var(--text-dim);
             text-transform: uppercase;
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             letter-spacing: 1px;
         }
 
         .status-item .value {
             color: var(--text-main);
             font-weight: 600;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* Grüne Diode für System Online */
         .diode {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--success);
-            box-shadow: 0 0 8px var(--success), 0 0 20px rgba(0, 255, 157, 0.4);
+            box-shadow: 0 0 6px var(--success), 0 0 12px rgba(0, 255, 157, 0.4);
             animation: pulse-diode 2s ease-in-out infinite;
+            flex-shrink: 0;
         }
 
         .diode.offline {
             background: var(--error);
-            box-shadow: 0 0 8px var(--error);
+            box-shadow: 0 0 6px var(--error);
             animation: none;
         }
 
         @keyframes pulse-diode {
-            0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--success), 0 0 20px rgba(0, 255, 157, 0.4); }
-            50% { opacity: 0.7; box-shadow: 0 0 4px var(--success), 0 0 10px rgba(0, 255, 157, 0.2); }
-        }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 6px var(--success), 0 0 12px rgba(0, 255, 157, 0.4);
+            }
+
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 3px var(--success), 0 0 6px rgba(0, 255, 157, 0.2);
+            }
         }
 
         .user-name {
             color: var(--accent-primary);
             font-weight: 600;
+            font-size: 0.75rem;
         }
 
         .user-status {
-            padding: 3px 10px;
+            padding: 4px 8px;
             background: rgba(0, 255, 157, 0.15);
             border: 1px solid var(--success);
             border-radius: 3px;
             color: var(--success);
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .logout-btn {
             color: var(--text-dim);
             text-decoration: none;
-            padding: 5px 12px;
+            padding: 6px 10px;
             border: 1px solid var(--border-color);
             border-radius: 3px;
             transition: all 0.2s;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
+            display: block;
         }
 
         .logout-btn:hover {
@@ -181,7 +201,7 @@
             padding: 25px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
             position: relative;
             overflow-y: auto;
@@ -204,9 +224,13 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         /* --- FORM ELEMENTS --- */
-        form { display: flex; flex-direction: column; flex-grow: 1; }
+        form {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
 
         label {
             font-size: 0.7rem;
@@ -217,9 +241,13 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        label:first-of-type { margin-top: 0; }
-        
-        input, select {
+
+        label:first-of-type {
+            margin-top: 0;
+        }
+
+        input,
+        select {
             width: 100%;
             background: var(--bg-input);
             border: 1px solid var(--border-color);
@@ -231,8 +259,9 @@
             transition: all 0.2s;
             box-sizing: border-box;
         }
-        
-        input:focus, select:focus {
+
+        input:focus,
+        select:focus {
             outline: none;
             border-color: var(--accent-primary);
             box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
@@ -249,6 +278,7 @@
             border: 1px solid var(--border-color);
             border-radius: 4px;
         }
+
         .mode-btn {
             flex: 1;
             padding: 10px;
@@ -262,14 +292,16 @@
             transition: all 0.2s;
             border-radius: 2px;
         }
+
         .mode-btn.active {
             background: linear-gradient(135deg, var(--accent-secondary), #5a3dbf);
             color: #fff;
             box-shadow: 0 0 15px rgba(124, 77, 255, 0.4);
         }
-        .mode-btn:hover:not(.active) { 
-            color: #fff; 
-            background: rgba(255,255,255,0.05);
+
+        .mode-btn:hover:not(.active) {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         /* --- ACTION BUTTON --- */
@@ -285,11 +317,12 @@
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.25s;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             border-radius: 4px;
             position: relative;
             overflow: hidden;
         }
+
         #executeBtn::before {
             content: '';
             position: absolute;
@@ -297,16 +330,19 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s;
         }
+
         #executeBtn:hover::before {
             left: 100%;
         }
+
         #executeBtn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
         }
+
         #executeBtn:disabled {
             background: #333;
             color: #666;
@@ -314,6 +350,7 @@
             box-shadow: none;
             transform: none;
         }
+
         #executeBtn:disabled::before {
             display: none;
         }
@@ -332,63 +369,144 @@
             white-space: pre-wrap;
             border-radius: 4px;
         }
-        
+
         /* Custom Scrollbar */
-        #log-window::-webkit-scrollbar { width: 6px; }
-        #log-window::-webkit-scrollbar-track { background: #0a0a0f; }
-        #log-window::-webkit-scrollbar-thumb { background: var(--accent-secondary); border-radius: 3px; }
+        #log-window::-webkit-scrollbar {
+            width: 6px;
+        }
 
-        .log-entry { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #1a1a25; animation: fadeIn 0.3s ease; }
-        .log-ts { color: var(--accent-secondary); margin-right: 12px; font-size: 0.7rem; font-weight: bold; }
-        .log-success { color: var(--success); text-shadow: 0 0 5px rgba(0, 255, 157, 0.3); }
-        .log-error { color: var(--error); text-shadow: 0 0 5px rgba(255, 51, 102, 0.3); }
-        .log-sys { color: var(--accent-primary); }
+        #log-window::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        #log-window::-webkit-scrollbar-thumb {
+            background: var(--accent-secondary);
+            border-radius: 3px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1a1a25;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .log-ts {
+            color: var(--accent-secondary);
+            margin-right: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .log-success {
+            color: var(--success);
+            text-shadow: 0 0 5px rgba(0, 255, 157, 0.3);
+        }
+
+        .log-error {
+            color: var(--error);
+            text-shadow: 0 0 5px rgba(255, 51, 102, 0.3);
+        }
+
+        .log-sys {
+            color: var(--accent-primary);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* --- HELPER --- */
-        .hidden { display: none; }
-        .hint-text { margin-top: 6px; font-size: 0.65rem; color: var(--text-dim); }
-        .warning-text { margin-top:15px; font-size:0.7rem; color: var(--warning); background: rgba(255, 171, 64, 0.1); padding: 12px; border-left: 3px solid var(--warning); border-radius: 0 4px 4px 0;}
+        .hidden {
+            display: none;
+        }
+
+        .hint-text {
+            margin-top: 6px;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+        }
+
+        .warning-text {
+            margin-top: 15px;
+            font-size: 0.7rem;
+            color: var(--warning);
+            background: rgba(255, 171, 64, 0.1);
+            padding: 12px;
+            border-left: 3px solid var(--warning);
+            border-radius: 0 4px 4px 0;
+        }
 
         /* Mobile Responsive */
         @media (max-width: 900px) {
-            .main-grid { grid-template-columns: 1fr; height: auto; }
-            .panel { min-height: 400px; }
-            .status-bar { flex-direction: column; gap: 10px; padding: 15px; }
-            .status-left, .status-right { width: 100%; justify-content: center; flex-wrap: wrap; }
+            .main-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .panel {
+                min-height: 400px;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .status-left,
+            .status-right {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="banner-wrapper">
-        <!-- Status Bar oben -->
-        <div class="status-bar">
-            <div class="status-left">
-                <div class="status-item">
-                    <div class="diode {% if uplink_status != 'Connected' %}offline{% endif %}"></div>
-                    <span class="value">{% if uplink_status == 'Connected' %}SYSTEM ONLINE{% else %}SYSTEM OFFLINE{% endif %}</span>
-                </div>
-                <div class="status-item">
-                    <span class="label">Apps:</span>
-                    <span class="value">{{ app_config.keys() | list | length }}</span>
-                </div>
-                <div class="status-item" id="datetime-display">
-                    <span class="label">Zeit:</span>
-                    <span class="value" id="live-clock">--:--:--</span>
-                </div>
+        <!-- Status Links neben dem Banner -->
+        <div class="status-overlay status-left">
+            <div class="status-item">
+                <div class="diode {% if uplink_status != 'Connected' %}offline{% endif %}"></div>
+                <span class="value">{% if uplink_status == 'Connected' %}ONLINE{% else %}OFFLINE{% endif %}</span>
             </div>
-            <div class="status-right">
-                <div class="user-info">
-                    <span class="user-name">{{ user }}</span>
-                    <span class="user-status">Active</span>
-                    <a href="/logout" class="logout-btn">Logout</a>
-                </div>
+            <div class="status-item">
+                <span class="label">Apps</span>
+                <span class="value">{{ app_config.keys() | list | length }}</span>
+            </div>
+            <div class="status-item" id="datetime-display">
+                <span class="label">Zeit</span>
+                <span class="value" id="live-clock">--:--:--</span>
             </div>
         </div>
-        
+
         <img src="/static/banner.jpg" alt="SuStoolz Banner" class="banner-img">
+
+        <!-- Status Rechts neben dem Banner -->
+        <div class="status-overlay status-right">
+            <div class="status-item">
+                <span class="label">User</span>
+                <span class="user-name">{{ user }}</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Status</span>
+                <span class="user-status">Active</span>
+            </div>
+            <div class="status-item">
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
     </div>
 
     <div class="main-grid">
@@ -440,14 +558,15 @@
                             <input type="number" name="delay_max" step="0.1" value="5.0" min="0">
                         </div>
                     </div>
-                    
+
                     <div class="hint-text" id="timerHint">
                         Randomized delay between events.
                     </div>
                 </div>
 
                 <div id="allParamsWarning" class="hidden warning-text">
-                    ⚠ <strong>BATCH MODE:</strong> Executes ALL events sequentially. Adjust Delays above to avoid ban risk.
+                    ⚠ <strong>BATCH MODE:</strong> Executes ALL events sequentially. Adjust Delays above to avoid ban
+                    risk.
                 </div>
 
                 <button type="submit" id="executeBtn">Trigger Event</button>
@@ -457,9 +576,11 @@
         <div class="panel">
             <h1>System Output / Terminal</h1>
             <div id="log-window">
-                <div class="log-entry"><span class="log-ts">SYSTEM</span> <span class="log-sys">Interface loaded. Uplink to Zone C initialized.</span></div>
+                <div class="log-entry"><span class="log-ts">SYSTEM</span> <span class="log-sys">Interface loaded. Uplink
+                        to Zone C initialized.</span></div>
                 {% if uplink_status != "Connected" %}
-                <div class="log-entry"><span class="log-ts">WARN</span> <span class="log-error">Zone C Connection Status: {{ uplink_status }}</span></div>
+                <div class="log-entry"><span class="log-ts">WARN</span> <span class="log-error">Zone C Connection
+                        Status: {{ uplink_status }}</span></div>
                 {% endif %}
             </div>
         </div>
@@ -467,7 +588,7 @@
 
     <script>
         const appConfig = {{ app_config | tojson }};
-        
+
         // Live Clock Update
         function updateClock() {
             const now = new Date();
@@ -488,7 +609,7 @@
 
             document.getElementById('singleParams').classList.toggle('hidden', !isSingle);
             document.getElementById('timerParams').classList.toggle('hidden', isSingle);
-            
+
             document.getElementById('allParamsWarning').classList.toggle('hidden', !isAll);
             document.getElementById('timerHint').classList.toggle('hidden', isAll);
         }
@@ -497,8 +618,8 @@
             const appName = document.getElementById('appSelect').value;
             const eventSelect = document.getElementById('eventSelect');
             eventSelect.innerHTML = '';
-            
-            if(appConfig[appName]) {
+
+            if (appConfig[appName]) {
                 appConfig[appName].forEach(evt => {
                     let opt = document.createElement('option');
                     opt.value = evt;
@@ -514,13 +635,13 @@
             e.preventDefault();
             const btn = document.getElementById('executeBtn');
             const logWin = document.getElementById('log-window');
-            
+
             btn.disabled = true;
             btn.innerText = "SENDING...";
-            
+
             const formData = new FormData(e.target);
             const now = new Date();
-            const ts = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0') + ":" + now.getSeconds().toString().padStart(2,'0');
+            const ts = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
 
             const tempLog = document.createElement('div');
             tempLog.className = 'log-entry';
@@ -534,15 +655,15 @@
 
                 const newEntry = document.createElement('div');
                 newEntry.className = 'log-entry';
-                
+
                 let logContent = "";
-                if(data.success) {
-                     if(data.full_resp && data.full_resp.http_code) {
+                if (data.success) {
+                    if (data.full_resp && data.full_resp.http_code) {
                         const statusClass = data.full_resp.http_code === 200 ? 'log-success' : 'log-error';
                         logContent = `<span class="${statusClass}">[HTTP ${data.full_resp.http_code}]</span> ${data.full_resp.server_response}`;
-                     } else {
-                         logContent = `<span class="log-success">✔ SUCCESS:</span> ${data.full_resp ? data.full_resp.message : "Command executed."}`;
-                     }
+                    } else {
+                        logContent = `<span class="log-success">✔ SUCCESS:</span> ${data.full_resp ? data.full_resp.message : "Command executed."}`;
+                    }
                 } else {
                     logContent = `<span class="log-error">✘ FAILURE:</span> ${data.log_entry || data.message || "Unknown Error"}`;
                 }
@@ -563,4 +684,5 @@
         };
     </script>
 </body>
+
 </html>
