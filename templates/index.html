@@ -3,197 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuStoolz | Dashboard</title>
+    <title>SuStoolz | Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* --- NEUES FARBSCHEMA (Dark Grey Professional) --- */
         :root {
-            /* NEUES FARBSCHEMA: TOXIC GREEN / BIOHAZARD THEME */
-            --bg-core: #0a0c00; /* Sehr dunkles Grüngeschwärz */
-            --bg-dark: #111405; 
-            --glass: rgba(20, 35, 10, 0.85); /* Dunkelgrünes Glas */
-            --border: rgba(173, 255, 47, 0.25); /* Giftgrüner Rand (GreenYellow) */
-            --accent: #adff2f; /* Knalliges Giftgrün als Akzent */
-            --accent-glow: rgba(173, 255, 47, 0.6);
-            --text-main: #e8ffe8; /* Helles Grünweiß */
-            --text-dim: #8a9a7a;
-            --neon-green: #39ff14; /* Neon für Logs */
-            --danger: #ff3300;
+            --bg-main: #121212;      /* Sehr dunkler Hintergrund */
+            --bg-panel: #1e1e1e;     /* Panels etwas heller */
+            --bg-input: #2d2d2d;     /* Eingabefelder */
+            --border-color: #3a3a3a; /* Subtile Rahmen */
+            --text-primary: #e0e0e0; /* Haupttext hellgrau */
+            --text-secondary: #a0a0a0; /* Labels dunkler */
+            --accent-active: #4a4a4a; /* Aktive Elemente hervorheben */
+            --highlight-color: #ffffff; /* Wichtige Highlights */
+            --success-color: #4caf50;   /* Grün für Logs */
+            --error-color: #f44336;     /* Rot für Fehler */
         }
 
         body {
-            background-color: var(--bg-core);
-            /* Subtiler grüner Schein im Hintergrund */
-            background-image: radial-gradient(circle at 50% -20%, rgba(57, 255, 20, 0.15) 0%, var(--bg-core) 70%);
-            color: var(--text-main);
-            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
             padding: 20px;
             box-sizing: border-box;
         }
 
-        /* --- BANNER AREA --- */
-        .top-container {
-            width: 100%;
-            max-width: 1200px;
-            margin-bottom: 15px;
-        }
-
-        .banner-img {
-            width: 100%;
-            height: auto; /* Automatische Größenanpassung */
-            display: block;
-            border-radius: 12px 12px 0 0; /* Oben abgerundet */
-            border: 1px solid var(--border);
-            border-bottom: none;
-            box-shadow: 0 -5px 30px var(--accent-glow);
-        }
-
-        /* --- NAVIGATION --- */
-        .main-nav {
-            display: flex;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-top: none;
-            border-radius: 0 0 12px 12px; /* Unten abgerundet */
-            backdrop-filter: blur(10px);
-            padding: 10px 20px;
-            align-items: center;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-dim);
-            font-weight: 700;
-            padding: 10px 20px;
-            border-radius: 6px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-            margin-right: 10px;
-        }
-        
-        /* Aktiver Link leuchtet */
-        .nav-link.active, .nav-link:hover {
-            color: var(--bg-core);
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .user-badge { margin-left: auto; font-size: 0.9rem; color: var(--text-dim); display: flex; align-items: center; }
-        .logout { color: var(--danger); text-decoration: none; margin-left: 15px; font-weight: bold; padding: 5px 10px; border: 1px solid rgba(255, 51, 0, 0.3); border-radius: 4px;}
-        .logout:hover { background: rgba(255, 51, 0, 0.2); }
-
-        /* --- MAIN GRID LAYOUT --- */
+        /* --- GRID LAYOUT (Aufgeräumt) --- */
         .main-grid {
             display: grid;
-            grid-template-columns: 1fr 1.3fr;
-            gap: 20px;
+            grid-template-columns: 400px 1fr; /* Feste Breite links, Rest rechts */
+            gap: 25px;
             width: 100%;
             max-width: 1200px;
-            /* Höhe anpassen, damit es trotz Banner auf den Screen passt */
-            height: calc(80vh - 100px); 
-            min-height: 600px;
+            height: 85vh;
+            max-height: 900px;
         }
 
-        /* PANELS */
+        /* --- PANELS (Solide & Sauber) --- */
         .panel {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px; /* Dezentere Rundung */
             padding: 25px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* Weicher Schatten */
             position: relative;
+            overflow-y: auto;
+        }
+
+        h1 {
+            margin: 0 0 25px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--highlight-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
         }
         
-        /* Title Update */
-        h1.panel-title { 
-            margin: 0 0 20px 0; 
-            font-size: 1.8rem; 
-            color: var(--accent); 
-            letter-spacing: 1px; 
-            text-transform: uppercase; 
-            text-shadow: 0 0 10px var(--accent-glow);
+        /* --- FORM ELEMENTE (Einheitlich) --- */
+        form {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Damit der Submit Button unten landet */
         }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px; /* Abstand zum Input */
+            margin-top: 20px;   /* Abstand zum vorherigen Feld */
+            display: block;
+        }
+        label:first-of-type { margin-top: 0; }
         
-        .edition-tag {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            vertical-align: middle;
-            margin-left: 10px;
-            letter-spacing: 0;
-            text-transform: none;
-            background: rgba(173, 255, 47, 0.1);
-            padding: 2px 8px;
+        input, select, textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 12px;
             border-radius: 4px;
-            border: 1px solid var(--border);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, background 0.2s;
+            box-sizing: border-box; /* Wichtig für Padding */
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #666;
+            background: #363636;
         }
 
-        /* FORM ELEMENTS - Toxic Style */
-        label { color: var(--accent); letter-spacing: 1px; font-size: 0.7rem; margin-top: 15px; }
-        input, select { background: rgba(0,0,0,0.6); border-color: var(--border); color: var(--accent); }
-        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        /* --- MODE SWITCHER BUTTONS --- */
+        .mode-toggles {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: var(--bg-input);
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: var(--accent-active);
+            color: var(--highlight-color);
+        }
 
-        /* MODE SWITCHER - Green */
-        .mode-btn { background: #0a1000; border-color: var(--border); color: var(--text-dim); }
-        .mode-btn.active { background: var(--accent); color: var(--bg-core); box-shadow: 0 0 20px var(--accent-glow); border-color: var(--accent); }
-
-        /* BUTTON - Changed Text */
+        /* --- EXECUTE BUTTON --- */
         #executeBtn {
-            margin-top: auto;
-            background: linear-gradient(135deg, var(--accent), #7cb300);
-            color: var(--bg-core);
-            font-size: 1.1rem;
-            box-shadow: 0 0 20px rgba(173, 255, 47, 0.4);
+            margin-top: auto; /* Schiebt Button ganz nach unten */
+            background: var(--text-primary);
+            color: var(--bg-main);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
         }
-        #executeBtn:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--accent-glow); }
+        #executeBtn:hover {
+            background: #ffffff;
+        }
+        #executeBtn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
 
-        /* LOG WINDOW - Matrix Style Green */
-        #log-window { background: #050800; border-color: var(--border); color: var(--neon-green); }
-        .log-entry { border-bottom-color: #1a2505; }
-        .log-ts { color: #557722; }
+        /* --- TERMINAL LOG --- */
+        #log-window {
+            background: #0a0a0a; /* Etwas dunkler als das Panel */
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            flex-grow: 1;
+            font-family: 'JetBrains Mono', 'Consolas', monospace; /* Monospace Font für Logs */
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+            white-space: pre-wrap; /* Zeilenumbrüche erhalten */
+        }
+        
+        .log-entry { margin-bottom: 8px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px; }
+        .log-ts { color: #666; margin-right: 8px; font-size: 0.75rem; }
+        .log-success { color: var(--success-color); }
+        .log-error { color: var(--error-color); }
 
+        /* --- HELPER --- */
         .hidden { display: none; }
+        .user-badge { position: absolute; top: 25px; right: 25px; font-size: 0.85rem; color: var(--text-secondary); }
+        .logout { color: var(--text-primary); text-decoration: none; margin-left: 10px; padding: 2px 6px; background: var(--bg-input); border-radius: 4px;}
+        .hint-text { margin-top: 6px; font-size: 0.75rem; color: #666; }
+        .warning-text { margin-top:15px; font-size:0.75rem; color: #ffab40; background: rgba(255, 171, 64, 0.1); padding: 8px; border-radius: 4px;}
+
     </style>
 </head>
 <body>
 
-    <div class="top-container">
-        <img src="/static/banner.png" alt="SusToolZ Banner" class="banner-img">
-        
-        <nav class="main-nav">
-            <a href="/" class="nav-link {% if current_page == 'home' %}active{% endif %}">Dashboard</a>
-            <a href="/repeat" class="nav-link {% if current_page == 'repeat' %}active{% endif %}">Empfohlen Repeat</a>
-            
-            <div class="user-badge">
-                 Operator: <span style="color:var(--accent); margin-left:5px;">{{ user }}</span> 
-                 <a href="/logout" class="logout">ABMELDEN</a>
-            </div>
-        </nav>
-    </div>
-
     <div class="main-grid">
         <div class="panel">
-            <h1 class="panel-title">
-                SusToolZ 
-                <span class="edition-tag">(Empfohlen Edition xd)</span>
-            </h1>
-
-            <label style="margin-top:0;">OPERATION MODE</label>
-            <div class="mode-toggles">
-                <button type="button" class="mode-btn active" onclick="setMode('single')">SINGLE</button>
-                <button type="button" class="mode-btn" onclick="setMode('credit_all')">CREDIT ALL</button>
-                <button type="button" class="mode-btn" onclick="setMode('timer')">TIMER</button>
-            </div>
+            <div class="user-badge">{{ user }} <a href="/logout" class="logout">Logout</a></div>
+            <h1>Control Unit</h1>
 
             <form id="controlForm">
+                <label>OPERATION MODE</label>
+                <div class="mode-toggles">
+                    <button type="button" class="mode-btn active" onclick="setMode('single')">Single</button>
+                    <button type="button" class="mode-btn" onclick="setMode('credit_all')">Credit All</button>
+                    <button type="button" class="mode-btn" onclick="setMode('timer')">Timer</button>
+                </div>
                 <input type="hidden" name="mode" id="modeInput" value="single">
 
                 <label>APP SELECTION</label>
@@ -210,7 +212,7 @@
                 </select>
 
                 <label>DEVICE ID</label>
-                <input type="text" name="device_id" placeholder="xxxx-xxxx-xxxx-xxxx" required>
+                <input type="text" name="device_id" placeholder="xxxx-xxxx-xxxx-xxxx" required style="font-family: monospace;">
 
                 <div id="singleParams">
                     <label>EVENT TRIGGER</label>
@@ -218,36 +220,33 @@
                 </div>
 
                 <div id="timerParams" class="hidden">
-                     <label>START TERMIN (Optional)</label>
-                     <input type="datetime-local" name="start_time" id="startTimeInput" style="color-scheme: dark;">
-                     <div style="margin-top:5px; margin-bottom:15px; font-size:0.7rem; color:var(--text-dim);">
-                         Leer lassen = Sofort starten.
-                     </div>
- 
-                    <label>MIN DELAY (HOURS)</label>
-                    <input type="number" name="delay_min" step="0.1" value="1.0">
-                    <label>MAX DELAY (HOURS)</label>
-                    <input type="number" name="delay_max" step="0.1" value="5.0">
-                    <div style="margin-top:10px; font-size:0.7rem; color:var(--text-dim);">
-                        Random Intervall zwischen Events.
+                    <label>START TERMIN (Optional)</label>
+                    <input type="datetime-local" name="start_time" id="startTimeInput">
+                    <div class="hint-text">Leer lassen für sofortigen Start.</div>
+
+                    <label>MIN DELAY (Stunden)</label>
+                    <input type="number" name="delay_min" step="0.1" value="1.0" min="0">
+                    
+                    <label>MAX DELAY (Stunden)</label>
+                    <input type="number" name="delay_max" step="0.1" value="5.0" min="0">
+                    
+                    <div class="hint-text" id="timerHint">
+                        Events werden zufällig zwischen Min und Max Delay ausgeführt.
                     </div>
                 </div>
 
-                <div id="allParams" class="hidden" style="margin-top:15px; font-size:0.75rem; color:var(--accent);">
-                    ⚠ Führt ALLE Events dieser App sequentiell aus.
+                <div id="allParamsWarning" class="hidden warning-text">
+                    ⚠ "Credit All" führt alle Events nacheinander aus. Nutze die Timer-Einstellungen oben für Abstände, oder setze beide auf 0 für maximale Geschwindigkeit.
                 </div>
 
-                <button type="submit" id="executeBtn">Credit Event</button>
+                <button type="submit" id="executeBtn">Befehl Senden</button>
             </form>
         </div>
 
-        <div class="panel" style="padding:0; border:none; background:transparent; box-shadow:none;">
-            <div class="panel" style="height:100%; padding-bottom:10px;">
-                <h1 class="panel-title" style="font-size:1.2rem;">Live Uplink</h1>
-                <div id="log-window">
-                    <div class="log-entry"><span class="log-ts">SYS</span> SusToolZ "Empfohlen Edition" initialized.</div>
-                    <div class="log-entry"><span class="log-ts">SYS</span> Awaiting inputs...</div>
-                </div>
+        <div class="panel">
+            <h1>System Output</h1>
+            <div id="log-window">
+                <div class="log-entry"><span class="log-ts">SYSTEM</span> Ready. Connected to Zone B Engine.</div>
             </div>
         </div>
     </div>
@@ -256,69 +255,103 @@
         const appConfig = {{ app_config | tojson }};
         
         function setMode(mode) {
+            // Update UI State
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
+            
+            // Set Hidden Input
             document.getElementById('modeInput').value = mode;
-            document.getElementById('singleParams').classList.toggle('hidden', mode !== 'single');
-            document.getElementById('timerParams').classList.toggle('hidden', mode !== 'timer');
-            document.getElementById('allParams').classList.toggle('hidden', mode !== 'credit_all');
+
+            const isSingle = mode === 'single';
+            const isTimer = mode === 'timer';
+            const isAll = mode === 'credit_all';
+
+            // Show/Hide Sections
+            document.getElementById('singleParams').classList.toggle('hidden', !isSingle);
+            // Timer inputs werden sowohl für Timer als auch Credit All Modus benötigt
+            document.getElementById('timerParams').classList.toggle('hidden', isSingle);
+            
+            // Spezieller Hinweis für Credit All
+            document.getElementById('allParamsWarning').classList.toggle('hidden', !isAll);
+            document.getElementById('timerHint').classList.toggle('hidden', isAll);
         }
 
         function updateEvents() {
             const appName = document.getElementById('appSelect').value;
             const eventSelect = document.getElementById('eventSelect');
             eventSelect.innerHTML = '';
+            
             if(appConfig[appName]) {
                 appConfig[appName].forEach(evt => {
                     let opt = document.createElement('option');
-                    opt.value = evt; opt.text = evt; eventSelect.appendChild(opt);
+                    opt.value = evt;
+                    opt.text = evt;
+                    eventSelect.appendChild(opt);
                 });
             }
         }
-        updateEvents();
 
+        // Init Events
+        if (Object.keys(appConfig).length > 0) {
+            updateEvents();
+        }
+
+        // LOGIC
         document.getElementById('controlForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('executeBtn');
             const logWin = document.getElementById('log-window');
             
-            // Coole Animation beim Klicken
-            btn.innerHTML = "Processing...";
-            btn.style.background = "#333"; btn.style.color = "var(--accent)";
             btn.disabled = true;
-
+            btn.innerText = "Sende...";
+            
             const formData = new FormData(e.target);
+            const ts = new Date().toLocaleTimeString();
 
+            // Log: Sending...
             const tempLog = document.createElement('div');
             tempLog.className = 'log-entry';
-            tempLog.innerHTML = `<span class="log-ts" style="color:var(--accent);">CMD</span> Transmitting to Zone B...`;
+            tempLog.innerHTML = `<span class="log-ts">${ts}</span> Transmitting command...`;
             logWin.appendChild(tempLog);
             logWin.scrollTop = logWin.scrollHeight;
 
             try {
-                const res = await fetch('/api/proxy_send', { method: 'POST', body: formData });
+                const res = await fetch('/api/proxy_send', {
+                    method: 'POST',
+                    body: formData
+                });
                 const data = await res.json();
 
                 const newEntry = document.createElement('div');
                 newEntry.className = 'log-entry';
-                // Farben anpassen ans neue Theme
-                newEntry.style.color = data.success ? "var(--neon-green)" : "var(--danger)";
-                newEntry.innerHTML = data.log_entry || "<span class='log-ts'>ERR</span> Unknown Server Response";
+                
+                let logContent = "";
+                if(data.success) {
+                     if(data.full_resp.http_code) {
+                         // Single Mode Response
+                        const statusClass = data.full_resp.http_code === 200 ? 'log-success' : 'log-error';
+                        logContent = `<span class="${statusClass}">[HTTP ${data.full_resp.http_code}]</span> ${data.full_resp.server_response}`;
+                     } else {
+                         // Queue/Timer Message
+                         logContent = `<span class="log-success">✔</span> ${data.full_resp.message}`;
+                     }
+                } else {
+                    logContent = `<span class="log-error">✘ ERROR:</span> ${data.log_entry || data.message || "Unknown Error"}`;
+                }
+
+                newEntry.innerHTML = `<span class="log-ts">${ts}</span> ${logContent}`;
                 
                 logWin.appendChild(newEntry);
 
             } catch (err) {
                 const errEntry = document.createElement('div');
-                errEntry.className = 'log-entry';
-                errEntry.style.color = "var(--danger)";
-                errEntry.innerHTML = "<span class='log-ts'>CRIT</span> Uplink failed. " + err;
+                errEntry.className = 'log-entry log-error';
+                errEntry.innerHTML = `<span class="log-ts">${ts}</span> CRITICAL UPLINK FAIL: ${err}`;
                 logWin.appendChild(errEntry);
             } finally {
-                // Button zurücksetzen
-                btn.innerHTML = "Credit Event";
-                btn.removeAttribute("style"); // Reset inline styles to CSS defaults
-                btn.disabled = false;
                 logWin.scrollTop = logWin.scrollHeight;
+                btn.disabled = false;
+                btn.innerText = "Befehl Senden";
             }
         };
     </script>
