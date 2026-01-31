@@ -337,6 +337,95 @@
             border-radius: 0 4px 4px 0;
         }
 
+        /* --- TERMINAL STATUS BAR --- */
+        .terminal-status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 12px 15px;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(15, 15, 25, 0.9));
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .terminal-status-bar .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .terminal-status-bar .status-label {
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+        }
+
+        .terminal-status-bar .status-value {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .status-badge.user {
+            background: rgba(108, 139, 186, 0.2);
+            border: 1px solid var(--text-dim);
+            color: var(--text-dim);
+        }
+
+        .status-badge.superuser {
+            background: rgba(124, 77, 255, 0.2);
+            border: 1px solid var(--accent-secondary);
+            color: var(--accent-secondary);
+        }
+
+        .status-badge.admin {
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid var(--accent-tertiary);
+            color: var(--accent-tertiary);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-indicator.online {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success), 0 0 15px rgba(0, 255, 157, 0.4);
+            animation: pulse-status 2s ease-in-out infinite;
+        }
+
+        .status-indicator.offline {
+            background: var(--error);
+            box-shadow: 0 0 8px var(--error);
+        }
+
+        @keyframes pulse-status {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
         /* Mobile Responsive */
         @media (max-width: 900px) {
             .main-grid {
@@ -360,7 +449,7 @@
             <form id="controlForm">
                 <label>OPERATION MODE</label>
                 <div class="mode-toggles">
-                    <button type="button" class="mode-btn active" onclick="setMode('single')">Single</button>
+                    <button type="button" class="mode-btn active" onclick="setMode('single')">Single Event</button>
                     <button type="button" class="mode-btn" onclick="setMode('credit_all')">Credit All</button>
                 </div>
                 <input type="hidden" name="mode" id="modeInput" value="single">
@@ -396,6 +485,33 @@
 
         <div class="panel">
             <h1>SuSToolZ - 26 - ShoXxMod</h1>
+
+            <!-- Status Bar über Terminal -->
+            <div class="terminal-status-bar">
+                <div class="status-item">
+                    <span class="status-label">User:</span>
+                    <span class="status-value">{{ user }}</span>
+                    <span
+                        class="status-badge {% if user_status == 'Admin' %}admin{% elif user_status == 'Superuser' %}superuser{% else %}user{% endif %}">{{
+                        user_status }}</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Apps:</span>
+                    <span class="status-value">{{ app_count }}</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">System:</span>
+                    <span
+                        class="status-indicator {% if uplink_status == 'Connected' %}online{% else %}offline{% endif %}"></span>
+                    <span class="status-value">{% if uplink_status == 'Connected' %}Online{% else %}Offline{% endif
+                        %}</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Zeit:</span>
+                    <span class="status-value" id="live-clock">--:--:--</span>
+                </div>
+            </div>
+
             <div id="log-window">
                 <div class="log-entry"><span class="log-ts">SYSTEM</span> <span class="log-sys">Interface loaded. Uplink
                         to Zone C initialized.</span></div>
@@ -438,6 +554,16 @@
         }
 
         if (Object.keys(appConfig).length > 0) updateEvents();
+
+        // Live Clock für Status Bar
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) clockEl.textContent = timeStr;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
 
         function getTimestamp() {
             const now = new Date();

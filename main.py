@@ -30,12 +30,22 @@ ZONE_C_URL = os.environ.get("ZONE_C_URL", "http://localhost:8000").rstrip("/")
 INTERNAL_API_KEY = os.environ.get("INTERNAL_API_KEY", "secure-key-123")
 
 # Benutzer-Datenbank
-USERS_JSON = os.environ.get("USERS_JSON", '{"admin":"password"}')
+# Format: {"username": {"password": "...", "status": "User|Superuser|Admin"}} oder alt: {"username": "password"}
+USERS_JSON = os.environ.get("USERS_JSON", '{"admin":{"password":"password","status":"Admin"}}')
 try:
-    USERS = json.loads(USERS_JSON)
+    USERS_RAW = json.loads(USERS_JSON)
+    # Normalisiere auf neues Format
+    USERS = {}
+    for username, data in USERS_RAW.items():
+        if isinstance(data, str):
+            # Altes Format: {"user": "password"}
+            USERS[username] = {"password": data, "status": "User"}
+        else:
+            # Neues Format: {"user": {"password": "...", "status": "..."}}
+            USERS[username] = data
 except json.JSONDecodeError:
     print("CRITICAL: USERS_JSON could not be parsed. Defaulting to admin:password")
-    USERS = {"admin": "password"}
+    USERS = {"admin": {"password": "password", "status": "Admin"}}
 
 # --- HILFSFUNKTIONEN ---
 
@@ -74,8 +84,10 @@ async def index(request: Request):
 
     return templates.TemplateResponse("index.html", {
         "request": request, 
-        "user": user, 
+        "user": user,
+        "user_status": request.session.get("user_status", "User"),
         "app_config": apps, 
+        "app_count": len(apps),
         "current_page": "home",
         "uplink_status": uplink_status
     })
@@ -101,8 +113,9 @@ async def login_page(request: Request):
 
 @app.post("/login")
 async def login_submit(request: Request, username: str = Form(...), password: str = Form(...)):
-    if username in USERS and USERS[username] == password:
+    if username in USERS and USERS[username]["password"] == password:
         request.session["user"] = username
+        request.session["user_status"] = USERS[username].get("status", "User")
         return RedirectResponse(url="/", status_code=303)
     
     return templates.TemplateResponse("login.html", {
