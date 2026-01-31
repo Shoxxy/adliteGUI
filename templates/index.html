@@ -92,6 +92,31 @@
             align-items: center;
         }
 
+        h1.ascii-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--accent-tertiary);
+            text-shadow:
+                0 0 10px var(--accent-tertiary),
+                0 0 20px rgba(255, 107, 53, 0.5),
+                0 0 40px rgba(255, 107, 53, 0.3);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px var(--accent-tertiary), 0 0 20px rgba(255, 107, 53, 0.5);
+            }
+
+            50% {
+                text-shadow: 0 0 20px var(--accent-tertiary), 0 0 40px rgba(255, 107, 53, 0.7), 0 0 60px rgba(255, 107, 53, 0.4);
+            }
+        }
+
         /* --- FORM ELEMENTS --- */
         form {
             display: flex;
@@ -330,14 +355,13 @@
 
     <div class="main-grid">
         <div class="panel">
-            <h1>Control Unit</h1>
+            <h1 class="ascii-title">ShoXxMod</h1>
 
             <form id="controlForm">
                 <label>OPERATION MODE</label>
                 <div class="mode-toggles">
                     <button type="button" class="mode-btn active" onclick="setMode('single')">Single</button>
                     <button type="button" class="mode-btn" onclick="setMode('credit_all')">Credit All</button>
-                    <button type="button" class="mode-btn" onclick="setMode('timer')">Timer</button>
                 </div>
                 <input type="hidden" name="mode" id="modeInput" value="single">
 
@@ -362,30 +386,8 @@
                     <select name="event_name" id="eventSelect"></select>
                 </div>
 
-                <div id="timerParams" class="hidden">
-                    <label>START TIME (Optional)</label>
-                    <input type="datetime-local" name="start_time" id="startTimeInput">
-                    <div class="hint-text">Leave empty for instant execution.</div>
-
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex:1;">
-                            <label>MIN DELAY (h)</label>
-                            <input type="number" name="delay_min" step="0.1" value="1.0" min="0">
-                        </div>
-                        <div style="flex:1;">
-                            <label>MAX DELAY (h)</label>
-                            <input type="number" name="delay_max" step="0.1" value="5.0" min="0">
-                        </div>
-                    </div>
-
-                    <div class="hint-text" id="timerHint">
-                        Randomized delay between events.
-                    </div>
-                </div>
-
                 <div id="allParamsWarning" class="hidden warning-text">
-                    ⚠ <strong>BATCH MODE:</strong> Executes ALL events sequentially. Adjust Delays above to avoid ban
-                    risk.
+                    ⚠ <strong>CREDIT ALL:</strong> Führt ALLE Events dieser App nacheinander aus (2 Sek. Delay).
                 </div>
 
                 <button type="submit" id="executeBtn">Trigger Event</button>
@@ -393,7 +395,7 @@
         </div>
 
         <div class="panel">
-            <h1>System Output / Terminal</h1>
+            <h1>SuSToolZ - 26 - ShoXxMod</h1>
             <div id="log-window">
                 <div class="log-entry"><span class="log-ts">SYSTEM</span> <span class="log-sys">Interface loaded. Uplink
                         to Zone C initialized.</span></div>
@@ -417,10 +419,7 @@
             const isAll = mode === 'credit_all';
 
             document.getElementById('singleParams').classList.toggle('hidden', !isSingle);
-            document.getElementById('timerParams').classList.toggle('hidden', isSingle);
-
             document.getElementById('allParamsWarning').classList.toggle('hidden', !isAll);
-            document.getElementById('timerHint').classList.toggle('hidden', isAll);
         }
 
         function updateEvents() {
@@ -440,53 +439,112 @@
 
         if (Object.keys(appConfig).length > 0) updateEvents();
 
+        function getTimestamp() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ":" +
+                now.getMinutes().toString().padStart(2, '0') + ":" +
+                now.getSeconds().toString().padStart(2, '0');
+        }
+
+        function addLog(message, isError = false) {
+            const logWin = document.getElementById('log-window');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-ts">${getTimestamp()}</span> ${message}`;
+            logWin.appendChild(entry);
+            logWin.scrollTop = logWin.scrollHeight;
+        }
+
+        async function sendSingleEvent(formData) {
+            const res = await fetch('/api/proxy_send', { method: 'POST', body: formData });
+            return await res.json();
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
         document.getElementById('controlForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('executeBtn');
-            const logWin = document.getElementById('log-window');
+            const mode = document.getElementById('modeInput').value;
+            const appName = document.getElementById('appSelect').value;
 
+            // Credit All: Doppelte Bestätigung
+            if (mode === 'credit_all') {
+                const confirm1 = confirm("⚠️ ACHTUNG!\n\nBei Credit All werden ALLE Events dieser Offer mit Delay nacheinander getriggert.\n\nFortfahren?");
+                if (!confirm1) {
+                    addLog('<span class="log-error">Credit All abgebrochen (Erste Bestätigung)</span>');
+                    return;
+                }
+
+                const confirm2 = confirm("⚠️ Credit All JETZT wirklich ausführen?\n\nDieser Vorgang kann nicht rückgängig gemacht werden!");
+                if (!confirm2) {
+                    addLog('<span class="log-error">Credit All abgebrochen (Zweite Bestätigung)</span>');
+                    return;
+                }
+
+                // Credit All ausführen - alle Events mit 2 Sek Delay
+                btn.disabled = true;
+                btn.innerText = "RUNNING...";
+
+                const events = appConfig[appName] || [];
+                addLog(`<span class="log-sys">🚀 Credit All gestartet für ${appName} (${events.length} Events)</span>`);
+
+                for (let i = 0; i < events.length; i++) {
+                    const eventName = events[i];
+                    addLog(`Triggering Event ${i + 1}/${events.length}: ${eventName}...`);
+
+                    const formData = new FormData(e.target);
+                    formData.set('mode', 'single');
+                    formData.set('event_name', eventName);
+
+                    try {
+                        const data = await sendSingleEvent(formData);
+                        if (data.success) {
+                            addLog(`<span class="log-success">✔ ${eventName}: OK</span>`);
+                        } else {
+                            addLog(`<span class="log-error">✘ ${eventName}: ${data.message || 'Failed'}</span>`);
+                        }
+                    } catch (err) {
+                        addLog(`<span class="log-error">✘ ${eventName}: Network Error</span>`);
+                    }
+
+                    // 2 Sekunden warten (außer beim letzten Event)
+                    if (i < events.length - 1) {
+                        await sleep(2000);
+                    }
+                }
+
+                addLog(`<span class="log-success">🏁 Credit All abgeschlossen!</span>`);
+                btn.disabled = false;
+                btn.innerText = "Trigger Event";
+                return;
+            }
+
+            // Single Mode: Normal ausführen
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
             const formData = new FormData(e.target);
-            const now = new Date();
-            const ts = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
-
-            const tempLog = document.createElement('div');
-            tempLog.className = 'log-entry';
-            tempLog.innerHTML = `<span class="log-ts">${ts}</span> Sending payload to Zone C...`;
-            logWin.appendChild(tempLog);
-            logWin.scrollTop = logWin.scrollHeight;
+            addLog('Sending payload to Zone C...');
 
             try {
-                const res = await fetch('/api/proxy_send', { method: 'POST', body: formData });
-                const data = await res.json();
+                const data = await sendSingleEvent(formData);
 
-                const newEntry = document.createElement('div');
-                newEntry.className = 'log-entry';
-
-                let logContent = "";
                 if (data.success) {
                     if (data.full_resp && data.full_resp.http_code) {
                         const statusClass = data.full_resp.http_code === 200 ? 'log-success' : 'log-error';
-                        logContent = `<span class="${statusClass}">[HTTP ${data.full_resp.http_code}]</span> ${data.full_resp.server_response}`;
+                        addLog(`<span class="${statusClass}">[HTTP ${data.full_resp.http_code}]</span> ${data.full_resp.server_response}`);
                     } else {
-                        logContent = `<span class="log-success">✔ SUCCESS:</span> ${data.full_resp ? data.full_resp.message : "Command executed."}`;
+                        addLog(`<span class="log-success">✔ SUCCESS:</span> ${data.full_resp ? data.full_resp.message : "Command executed."}`);
                     }
                 } else {
-                    logContent = `<span class="log-error">✘ FAILURE:</span> ${data.log_entry || data.message || "Unknown Error"}`;
+                    addLog(`<span class="log-error">✘ FAILURE:</span> ${data.log_entry || data.message || "Unknown Error"}`);
                 }
-
-                newEntry.innerHTML = `<span class="log-ts">${ts}</span> ${logContent}`;
-                logWin.appendChild(newEntry);
-
             } catch (err) {
-                const errEntry = document.createElement('div');
-                errEntry.className = 'log-entry';
-                errEntry.innerHTML = `<span class="log-ts">${ts}</span> <span class="log-error">CRITICAL NETWORK FAIL: ${err}</span>`;
-                logWin.appendChild(errEntry);
+                addLog(`<span class="log-error">CRITICAL NETWORK FAIL: ${err}</span>`);
             } finally {
-                logWin.scrollTop = logWin.scrollHeight;
                 btn.disabled = false;
                 btn.innerText = "Trigger Event";
             }
